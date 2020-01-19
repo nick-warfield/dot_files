@@ -1,0 +1,52 @@
+# hotkeys
+
+# exit bspwm
+super + shift + Escape
+	bspc quit
+
+# restart bspwm
+super + shift + r
+	bspc wm --restart
+
+# lock screen
+super + c
+	light-locker-command -l
+
+# open terminal
+super + Return
+	urxvt
+
+# applicaiton launcher
+super + d
+	rofi -show run
+
+# close window
+super + shift + q
+	bspc node -c
+
+# next desktop
+super + Tab
+	bspc desktop -f next
+super + shift + Tab
+	bspc desktop -f prev
+
+# toggle fullscreen/floating
+super + f
+	bspc node -t \~fullscreen
+super + shift + f
+	bspc node -t \~pseudo_tiled
+
+# maximize/minimize window
+# super + m
+
+# switch/move window
+super + {_,shift +}{h,j,k,l}
+	bspc node -{f,s} {west,south,north,east}
+
+# switch desktop
+super + {1-9,0}
+	bspc desktop -f {1-9,10}
+
+# move window to desktop
+super + shift + {1-9,0}
+	bspc node -d {1-9,10}

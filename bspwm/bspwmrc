@@ -11,7 +11,7 @@ bspc monitor DP1 -d  6 7 8 9 10
 
 sxhkd &
 ~/.fehbg &
-~/Code/shell_scripts/animated_wallpaper.sh
+~/Code/scripts/animated_wallpaper.sh
 nm-applet &
 blueman-applet &
 light-locker &

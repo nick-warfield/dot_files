@@ -60,9 +60,9 @@ super + shift + {1-9,0}
 	pamixer --toggle-mute
 
 # media playback hotkeys
-{XF86AudoNext, shift + XF86AudioLowerVolume}
+{XF86AudioNext, shift + XF86AudioLowerVolume}
 	playerctl next
-{XF86AudoPrev, shift + XF86AudioRaiseVolume}
+{XF86AudioPrev, shift + XF86AudioRaiseVolume}
 	playerctl previous
 {XF86AudioPlay, XF86AudoPause, shift + XF86AudioMute}
 	playerctl play-pause

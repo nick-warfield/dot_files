@@ -1,9 +1,11 @@
 aseprite
 dconf
+discord
 htop
 neofetch
 pavucontrol.ini
 pulse
+Slack
 spotify
 user-dirs.dirs
 user-dirs.locale
@@ -11,3 +13,5 @@ visualboyadvance-m
 
 nvim/plugged
 nvim/spell
+
+mimeapps.list

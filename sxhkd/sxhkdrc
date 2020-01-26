@@ -35,6 +35,10 @@ super + f
 	bspc node -t \~fullscreen
 super + shift + f
 	bspc node -t \~pseudo_tiled
+super + ctrl + f
+	bspc node -t \~floating
+super + alt + f
+	bspc node -t \~tiled
 
 # maximize/minimize window
 # super + m

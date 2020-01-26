@@ -31,6 +31,7 @@ Plug 'w0rp/ale'							" linter
 Plug 'keith/swift.vim'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'xuhdev/vim-latex-live-preview'
+Plug 'plasticboy/vim-markdown'
 
 " Plugins stop here
 call plug#end()

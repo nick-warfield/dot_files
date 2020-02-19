@@ -11,6 +11,7 @@ bspc config remove_unplugged_monitors true
 bspc monitor -d 1 2 3 4 5 6 7 8 9 10
 
 sxhkd &
+wal -ni Pictures/coffee_shop.gif
 ~/.fehbg &
 ~/Code/scripts/animated_wallpaper.sh
 nm-applet &

@@ -32,6 +32,8 @@ Plug 'keith/swift.vim'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'xuhdev/vim-latex-live-preview'
 Plug 'plasticboy/vim-markdown'
+Plug 'jceb/vim-orgmode'
+Plug 'itchyny/calendar.vim'
 
 " Plugins stop here
 call plug#end()

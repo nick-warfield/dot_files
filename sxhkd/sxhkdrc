@@ -24,7 +24,7 @@ super + d
 super + shift + q
 	bspc node -c
 
-# next desktop
+# cycle desktops
 super + Tab
 	bspc desktop -f next
 super + shift + Tab
@@ -32,16 +32,23 @@ super + shift + Tab
 
 # toggle fullscreen/floating
 super + f
-	bspc node -t \~fullscreen
-super + shift + f
-	bspc node -t \~pseudo_tiled
-super + ctrl + f
 	bspc node -t \~floating
-super + alt + f
-	bspc node -t \~tiled
+super + shift + f
+	bspc node -t tiled
+super + ctrl + f
+	bspc node -t \~fullscreen
 
 # maximize/minimize window
-# super + m
+super + m
+	bspc desktop -l next
+
+super + b
+	bspc node -E
+
+super + space
+	bspc node -C forward
+super + shift + space
+	bspc node -C backward
 
 # switch/move window
 super + {_,shift +}{h,j,k,l}

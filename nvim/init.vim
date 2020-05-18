@@ -10,7 +10,9 @@ set number
 set wildmode=longest,list
 set autoread
 
-tnoremap <Esc> <C-\><C-n>
+noremap <A-[> <C-[>
+tnoremap <A-[> <C-\><C-n>
+tnoremap <C-w> <C-\><C-n><C-w>
 
 " Plugins go here
 
@@ -34,6 +36,7 @@ Plug 'xuhdev/vim-latex-live-preview'
 Plug 'plasticboy/vim-markdown'
 Plug 'jceb/vim-orgmode'
 Plug 'itchyny/calendar.vim'
+Plug 'mlr-msft/vim-loves-dafny'
 
 " Plugins stop here
 call plug#end()
@@ -51,8 +54,12 @@ let g:rust_fold = 1
 
 let g:livepreview_previewer = 'zathura'
 
-command -nargs=1 E tabe src/<args>.cpp | NERDTree | exe "normal jo" | exe "normal! <C-w>l" | vs | e include/<args>.hpp
-command -nargs=0 P e makefile | NERDTree | exe "normal jo" | exe "normal! <C-w>l" | vs | split | exe "normal! 10<C-w>+" | e src/main.cpp | exe "normal! <C-w>l" | set nonu | exe "te" | normal! <C-\><C-N><C-w>h
+command -nargs=0 T set nonu | exe "te"
+command -nargs=0 TLeft vs | set nonu | exe "te"
+command -nargs=0 TRight vs | exe "normal! <C-w>l" | set nonu | exe "te"
+command -nargs=0 TUp split | set nonu | exe "te"
+command -nargs=0 TDown split | exe "normal! <C-w>j" | set nonu | exe "te"
+command -nargs=0 TTab tabe | set nonu | exe "te"
 command -nargs=0 FS FSHere
 
 let NERDTreeIgnore = ['\.class$']

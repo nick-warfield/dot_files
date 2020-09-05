@@ -10,6 +10,11 @@ set number
 set wildmode=longest,list
 set autoread
 
+" for vimwiki plugin
+set nocompatible
+filetype plugin on
+syntax on
+
 noremap <A-[> <C-[>
 tnoremap <A-[> <C-\><C-n>
 tnoremap <C-w> <C-\><C-n><C-w>
@@ -37,6 +42,7 @@ Plug 'plasticboy/vim-markdown'
 Plug 'jceb/vim-orgmode'
 Plug 'itchyny/calendar.vim'
 Plug 'mlr-msft/vim-loves-dafny'
+Plug 'vimwiki/vimwiki'
 
 " Plugins stop here
 call plug#end()
@@ -52,7 +58,7 @@ let g:cpp_experimental_simple_template_highlight = 1
 let g:rust_recommended_style = 0
 let g:rust_fold = 1
 
-let g:livepreview_previewer = 'zathura'
+let g:livepreview_previewer = 'qpdfview'
 
 command -nargs=0 T set nonu | exe "te"
 command -nargs=0 TLeft vs | set nonu | exe "te"
@@ -63,3 +69,17 @@ command -nargs=0 TTab tabe | set nonu | exe "te"
 command -nargs=0 FS FSHere
 
 let NERDTreeIgnore = ['\.class$']
+
+let personal_wiki = {}
+let personal_wiki.path = '~/Documents/notes'
+let personal_wiki.path_html = '~/Documents/notes/html'
+let personal_wiki.syntax = 'default'
+let personal_wiki.auto_export = 1
+
+let high_seas_wiki = {}
+let high_seas_wiki.path = '~/Documents/high_seas'
+let high_seas_wiki.path_html = '~/Documents/high_seas/html'
+let high_seas_wiki.syntax = 'default'
+let high_seas_wiki.auto_export = 1
+
+let g:vimwiki_list = [high_seas_wiki]

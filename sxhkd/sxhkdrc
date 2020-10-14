@@ -9,12 +9,12 @@ super + shift + r
 	bspc wm --restart
 
 # lock screen
-super + c
-	light-locker-command -l
+#super + c
+#	light-locker-command -l
 
 # open terminal
 super + Return
-	urxvt
+	alacritty
 
 # applicaiton launcher
 super + d
@@ -33,9 +33,9 @@ super + shift + Tab
 # toggle fullscreen/floating
 super + f
 	bspc node -t \~floating
-super + shift + f
-	bspc node -t tiled
 super + ctrl + f
+	bspc node -t tiled
+super + shift + f
 	bspc node -t \~fullscreen
 
 # maximize/minimize window
@@ -75,7 +75,7 @@ super + shift + {1-9,0}
 	playerctl next
 {XF86AudioPrev, shift + XF86AudioRaiseVolume}
 	playerctl previous
-{XF86AudioPlay, XF86AudoPause, shift + XF86AudioMute}
+{XF86AudioPlay, XF86AudioPause, shift + XF86AudioMute}
 	playerctl play-pause
 
 # brightness hotkeys

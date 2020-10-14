@@ -40,7 +40,8 @@ Plug 'derekwyatt/vim-fswitch'
 
 Plug 'benekastah/neomake'
 Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
-Plug 'Shougo/neoinclude.vim'
+"Plug 'Shougo/neoinclude.vim'
+Plug 'xavierd/clang_complete'
 Plug 'deoplete-plugins/deoplete-jedi'	" Python autocomplete
 Plug 'sebastianmarkow/deoplete-rust'	" Rust autocomplete
 
@@ -60,11 +61,12 @@ call plug#end()
 call deoplete#enable()
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-call deoplete#custom#var('clangx', 'default_c_options', ['-I/usr/include/vulkan', '-I/usr/include/GLFW', '-I/usr/include/glm', '-I/usr/include/GL'])
-call deoplete#custom#var('clangx', 'default_cpp_options', ['-I/usr/include/vulkan', '-I/usr/include/GLFW', '-I/usr/include/glm', '-I/usr/include/GL'])
+call deoplete#custom#var('clangx', 'default_c_options', '-std=c++17')
+call deoplete#custom#var('clangx', 'default_cpp_options', '-std=c++17')
 let g:deoplete#sources#rust#racer_binary='~/.cargo/bin/racer'
+let g:clang_library_path='/usr/lib/libclang.so.10'
 
-let g:ale_linters = { 'cpp': ['ccls', 'clazy', 'cppcheck', 'cpplint', 'cquery', 'flawfinder', 'gcc'], }
+let g:ale_linters = { 'cpp': ['g++'], 'c': ['gcc'], }
 let g:ale_cpp_gcc_options = '-std=c++17 -Wall'
 let g:ale_set_highlights = 0
 

@@ -6,10 +6,11 @@ set softtabstop=4
 set noexpandtab
 set shiftwidth=4
 set autoindent
-set number
+set nonumber
 set wildmode=longest,list
 set autoread
 set mouse=a
+set foldmethod=syntax
 
 " for vimwiki plugin
 set nocompatible
@@ -19,6 +20,9 @@ syntax on
 noremap <A-[> <C-[>
 tnoremap <A-[> <C-\><C-n>
 tnoremap <C-w> <C-\><C-n><C-w>
+nnoremap <silent> <Space> za
+nnoremap <S-J> <C-D> M
+nnoremap <S-K> <C-U> M
 
 " Plugins go here
 
@@ -79,11 +83,20 @@ let g:rust_fold = 1
 
 let g:livepreview_previewer = 'qpdfview'
 
-call neomake#configure#automake('nw', 500)
-nmap <F5> :!make run<CR>
-nmap <F6> :!make test<CR>
-nmap <F7> :NERDTreeToggle<CR>
-nmap <F8> :TagbarToggle<CR>
+set signcolumn=yes
+let g:gitgutter_set_sign_backgrounds = 1
+highlight clear SignColumn
+
+" this is also linting, which is giving me bad warnings/errors
+"call neomake#configure#automake('nw', 1000)
+
+nnoremap <F5> :!make run<CR>
+nnoremap <F6> :!make test<CR>
+nnoremap <F7> :NERDTreeToggle<CR>
+nnoremap <F8> :TagbarToggle<CR>
+nnoremap <F9> zr
+nnoremap <F10> zm
+nnoremap <F11> :set nu!<CR>
 
 command -nargs=0 T set nonu | exe "te"
 command -nargs=0 TLeft vs | set nonu | exe "te"
@@ -108,3 +121,19 @@ let high_seas_wiki.syntax = 'default'
 let high_seas_wiki.auto_export = 1
 
 let g:vimwiki_list = [personal_wiki, high_seas_wiki]
+
+function! NeatFoldText()
+	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+	let lines_count = v:foldend - v:foldstart + 1
+	let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
+	let foldchar = matchstr(&fillchars, 'fold:\zs.')
+	let foldtextstart = strpart('[+]' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+	let foldtextend = lines_count_text . repeat(foldchar, 8)
+	let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+	return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+endfunction
+
+set foldtext=NeatFoldText()
+set fillchars=fold:\ 
+highlight Folded cterm=italic ctermbg=None ctermfg=Yellow
+

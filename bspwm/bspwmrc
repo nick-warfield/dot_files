@@ -37,3 +37,4 @@ wal -ni ~/Pictures/no_mans_sky.jpg -a "80" -b "#1F1D19"
 
 xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
 xsetroot -cursor_name left_ptr
+xset r rate 325 45

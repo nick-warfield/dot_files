@@ -1,3 +1,10 @@
+" TODO:
+"	- Fold by ctags?
+"	- customize status bar
+"	- customize tab bar
+"	- automatically auto format code
+"	- better cpp syntax highlighting (highlight stuff from libs)
+
 set showmatch
 set ignorecase
 set hlsearch
@@ -40,6 +47,7 @@ Plug 'w0rp/ale'							  " linter
 Plug 'octol/vim-cpp-enhanced-highlight'   " additional c++ highlighting
 Plug 'derekwyatt/vim-fswitch'
 
+" Autocompletion
 Plug 'ncm2/ncm2'
 Plug 'roxma/nvim-yarp'
 Plug 'ncm2/ncm2-bufword'
@@ -66,9 +74,11 @@ set completeopt=noinsert,menuone,noselect
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
-let g:ale_linters = { 'cpp': ['g++'], 'c': ['gcc'], }
-let g:ale_cpp_gcc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
-let g:ale_set_highlights = 0
+let g:ale_linters = { 'cpp': ['clang++'], 'c': ['clang'], }
+let g:ale_c_cc_executable = 'clang'
+let g:ale_cpp_cc_executable = 'clang++'
+let g:ale_c_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
+let g:ale_cpp_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
 
 let g:rust_recommended_style = 0
 let g:rust_fold = 1

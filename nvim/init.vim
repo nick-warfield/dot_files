@@ -67,7 +67,7 @@ inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
 
 let g:ale_linters = { 'cpp': ['g++'], 'c': ['gcc'], }
-let g:ale_cpp_gcc_options = '-std=c++17 -Wall'
+let g:ale_cpp_gcc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
 let g:ale_set_highlights = 0
 
 let g:rust_recommended_style = 0

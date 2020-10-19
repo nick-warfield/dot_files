@@ -1,9 +1,20 @@
 " TODO:
+"	- load large files faster
 "	- Fold by ctags?
+"
 "	- customize status bar
 "	- customize tab bar
+"	- clock
+"
 "	- automatically auto format code
 "	- better cpp syntax highlighting (highlight stuff from libs)
+"	- function declaration preview
+"
+"	- custom home page
+"	- better markdown highlighting and formating
+"	- plaintext file sync
+"	- email?
+"	- calendar?
 
 set showmatch
 set ignorecase
@@ -24,22 +35,51 @@ set nocompatible
 filetype plugin on
 syntax on
 
-noremap <A-[> <C-[>
-tnoremap <A-[> <C-\><C-n>
-tnoremap <C-w> <C-\><C-n><C-w>
+noremap <a-[> <c-[>
+tnoremap <a-[> <c-\><c-n>
+tnoremap <c-w> <c-\><c-n><c-w>
+nnoremap ( zk
+nnoremap ) zj
 nnoremap <silent> <Space> za
-nnoremap <C-J> <C-D> M
-nnoremap <C-K> <C-U> M
+
+nnoremap <M-j> <c-d> M
+nnoremap <M-k> <c-u> M
+nnoremap <M-t> <c-]>
+inoremap <M-j> <Esc><c-d> M
+inoremap <M-k> <Esc><c-u> M
+inoremap <M-t> <Esc><c-]>
+
+nnoremap <S-M-J> :wincmd j<CR>
+nnoremap <S-M-K> :wincmd k<CR>
+nnoremap <S-M-L> :wincmd l<CR>
+nnoremap <S-M-H> :wincmd h<CR>
+inoremap <S-M-J> <Esc>:w <bar> wincmd j<CR>
+inoremap <S-M-K> <Esc>:w <bar> wincmd k<CR>
+inoremap <S-M-L> <Esc>:w <bar> wincmd l<CR>
+inoremap <S-M-H> <Esc>:w <bar> wincmd h<CR>
+
+nnoremap <silent> <c-j> :m .+1<CR>==
+nnoremap <silent> <c-k> :m .-2<CR>==
+inoremap <silent> <c-j> <Esc>:m .+1<CR>==gi
+inoremap <silent> <c-k> <Esc>:m .-2<CR>==gi
+vnoremap <silent> <c-j> :m '>+1<CR>gv=gv
+vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 
 " Plugins go here
-
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'tpope/vim-fugitive'                 " git wrapper
-Plug 'airblade/vim-gitgutter'             " show git changes in file
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
-Plug 'scrooloose/nerdtree'                " tree view of files
-Plug 'majutsushi/tagbar'                  " make ctags
+Plug 'gioele/vim-autoswap'
+Plug 'ludovicchabant/vim-gutentags'
+
+" Fast File and Tag Finding
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 
 Plug 'neovim/pynvim'
 
@@ -54,6 +94,7 @@ Plug 'ncm2/ncm2-bufword'
 Plug 'ncm2/ncm2-path'
 Plug 'ncm2/ncm2-pyclang'
 
+" Groupware
 "Plug 'jceb/vim-orgmode'
 Plug 'vimwiki/vimwiki'
 Plug 'itchyny/calendar.vim'
@@ -78,7 +119,51 @@ let g:ale_linters = { 'cpp': ['clang++'], 'c': ['clang'], }
 let g:ale_c_cc_executable = 'clang'
 let g:ale_cpp_cc_executable = 'clang++'
 let g:ale_c_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
-let g:ale_cpp_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
+let g:ale_cpp_cc_options = '-std=c++17 -Wall -Wno-missing-braces -Iinclude -isystem lib'
+
+let g:fzf_buffers_jump = 1
+let g:fzf_preview_window = 'right:70%'
+let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.7, 'yoffset': 0.2, 'border': 'right' } }
+
+function! s:find_files()
+	let l:bat_options = '--preview=bat --style=plain --color=always {}'
+	let l:fzf_options = [
+	\		'--border',
+	\		'--margin=0',
+	\		'--inline-info',
+	\		'--reverse',
+	\		'--tabstop=4',
+	\		'--black',
+	\		l:bat_options,
+	\		'--preview-window=right:70%' ]
+	call fzf#run(fzf#wrap({ 'source': 'ag --ignore lib -g ./', 'options': fzf_options } ))
+endfunction
+command! -bang -nargs=0 -complete=dir Files call s:find_files()
+
+command! -bang -nargs=* -complete=dir BTags
+	\ call fzf#vim#buffer_tags(
+	\	<q-args>,
+	\	{ 'options': [
+	\		'--border',
+	\		'--margin=0',
+	\		'--inline-info',
+	\		'--reverse',
+	\		'--tabstop=2',
+	\		'--black' ] },
+	\	<bang>0)
+
+command! -bang -nargs=* -complete=dir Lines
+	\ call fzf#vim#lines(
+	\	<q-args>,
+	\	{ 'options': [
+	\		'--reverse',
+	\		'--tabstop=2',
+	\		'--black' ] },
+	\	<bang>0)
+
+nnoremap <c-f> :Files<CR>
+nnoremap <c-t> :BTags<CR>
+nnoremap // :Lines<CR>
 
 let g:rust_recommended_style = 0
 let g:rust_fold = 1
@@ -92,13 +177,16 @@ highlight clear SignColumn
 " this is also linting, which is giving me bad warnings/errors
 "call neomake#configure#automake('nw', 1000)
 
-nnoremap <F5> :!make run<CR>
-nnoremap <F6> :!make test<CR>
-nnoremap <F7> :NERDTreeToggle<CR>
-nnoremap <F8> :TagbarToggle<CR>
-nnoremap <F9> zR
+nnoremap  <F5> :!make run<CR>
+nnoremap  <F6> :!make test<CR>
+nnoremap  <F7> :NERDTreeToggle<CR>
+nnoremap  <F8> :TagbarToggle<CR>
+nnoremap  <F9> zR
 nnoremap <F10> zM
 nnoremap <F11> :set nu!<CR>
+
+let g:tagbar_autofocus = 1
+let g:tagbar_wrap = 1
 
 command -nargs=0 T set nonu | exe "te" | exe "startinsert"
 command -nargs=0 TLeft vs | set nonu | exe "te" | exe "startinsert"
@@ -123,6 +211,9 @@ let high_seas_wiki.syntax = 'default'
 let high_seas_wiki.auto_export = 1
 
 let g:vimwiki_list = [personal_wiki, high_seas_wiki]
+
+let g:calendar_google_calendar = 1
+let g:calendar_google_task = 1
 
 function! NeatFoldText()
 	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '

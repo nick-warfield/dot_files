@@ -217,29 +217,30 @@ command -nargs=0 TTab
 command -nargs=0 FS FSHere
 
 " Custom Key Bindings
+" Additional escape sequences
 noremap <a-[> <c-[>
 tnoremap <a-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
+
+" Buffer Navigation
+nnoremap <silent> <M-j> <c-d> M
+nnoremap <silent> <M-k> <c-u> M
+inoremap <silent> <M-j> <Esc><c-d> M
+inoremap <silent> <M-k> <Esc><c-u> M
 nnoremap ( zk
 nnoremap ) zj
-nnoremap <silent> <Space> za
 
-nnoremap <M-j> <c-d> M
-nnoremap <M-k> <c-u> M
-nnoremap <M-t> <c-]>
-inoremap <M-j> <Esc><c-d> M
-inoremap <M-k> <Esc><c-u> M
-inoremap <M-t> <Esc><c-]>
+" Window Select
+nnoremap <silent> <S-M-J> :wincmd j<CR>
+nnoremap <silent> <S-M-K> :wincmd k<CR>
+nnoremap <silent> <S-M-L> :wincmd l<CR>
+nnoremap <silent> <S-M-H> :wincmd h<CR>
+inoremap <silent> <S-M-J> <Esc>:w <bar> wincmd j<CR>
+inoremap <silent> <S-M-K> <Esc>:w <bar> wincmd k<CR>
+inoremap <silent> <S-M-L> <Esc>:w <bar> wincmd l<CR>
+inoremap <silent> <S-M-H> <Esc>:w <bar> wincmd h<CR>
 
-nnoremap <S-M-J> :wincmd j<CR>
-nnoremap <S-M-K> :wincmd k<CR>
-nnoremap <S-M-L> :wincmd l<CR>
-nnoremap <S-M-H> :wincmd h<CR>
-inoremap <S-M-J> <Esc>:w <bar> wincmd j<CR>
-inoremap <S-M-K> <Esc>:w <bar> wincmd k<CR>
-inoremap <S-M-L> <Esc>:w <bar> wincmd l<CR>
-inoremap <S-M-H> <Esc>:w <bar> wincmd h<CR>
-
+" Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
 nnoremap <silent> <c-k> :m .-2<CR>==
 inoremap <silent> <c-j> <Esc>:m .+1<CR>==gi
@@ -247,21 +248,28 @@ inoremap <silent> <c-k> <Esc>:m .-2<CR>==gi
 vnoremap <silent> <c-j> :m '>+1<CR>gv=gv
 vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 
-nnoremap <c-f> :FindLocalFiles<CR>
-"nnoremap <c-s-f> :FindHomeFiles<Cr>	" these keybindings are conflicting
-nnoremap <c-t> :BTags<CR>
+" Searching
+nnoremap <c-o> :FindLocalFiles<CR>
+"nnoremap <c-s-o> :FindHomeFiles<Cr>	" these keybindings are conflicting
+nnoremap <c-f> :BTags<CR>
+nnoremap <c-t> <c-]>
+inoremap <c-t> <Esc><c-]>
 nnoremap // :Lines<CR>
 
+" Function Keys
 "F1-F3 reserved for groupware
-nnoremap  <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina\ push lazygit<cr>
+nnoremap <silent> <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina\ push lazygit<cr>
 
-nnoremap  <F5> :call AutoMake('Finished\ Build', 'run')<cr><c-\><c-n>
-nnoremap  <F6> :call AutoMake('Finished\ Tests', 'test')<cr><c-\><c-n>
-nnoremap  <F7> :call AutoMake('Finished\ Clean\ Build', 'all')<cr><c-\><c-n>
+nnoremap <silent> <F5> :call AutoMake('Finished\ Build', 'run')<cr><c-\><c-n>
+nnoremap <silent> <F6> :call AutoMake('Finished\ Tests', 'test')<cr><c-\><c-n>
+nnoremap <silent> <F7> :call AutoMake('Finished\ Clean\ Build', 'all')<cr><c-\><c-n>
 
-nnoremap <F10> :MundoToggle<cr>
-nnoremap <F11> :NERDTreeToggle<CR>
-nnoremap <F12> :TagbarToggle<CR>
+nnoremap <silent> <F10> :MundoToggle<cr>
+nnoremap <silent> <F11> :NERDTreeToggle<CR>
+nnoremap <silent> <F12> :TagbarToggle<CR>
+
+" Misc
+nnoremap <silent> <Space> za
 
 " Global Settings
 set showmatch

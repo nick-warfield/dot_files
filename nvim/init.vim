@@ -6,7 +6,6 @@
 "	- customize tab bar
 "	- clock
 "
-"	- automatically auto format code
 "	- better cpp syntax highlighting (highlight stuff from libs)
 "	- function declaration preview
 "
@@ -29,6 +28,8 @@ set wildmode=longest,list
 set autoread
 set mouse=a
 set foldmethod=syntax
+set undofile
+set undodir=~/.cache/nvim/undo_history/
 
 " for vimwiki plugin
 set nocompatible
@@ -68,11 +69,14 @@ vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 " Plugins go here
 call plug#begin('~/.config/nvim/plugged')
 
-Plug 'tpope/vim-fugitive'
+Plug 'lambdalisue/gina.vim'
+"Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 Plug 'gioele/vim-autoswap'
 Plug 'ludovicchabant/vim-gutentags'
+Plug 'skywind3000/asyncrun.vim'
+Plug 'simnalamburt/vim-mundo'
 
 " Fast File and Tag Finding
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
@@ -84,6 +88,7 @@ Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
 Plug 'neovim/pynvim'
 
 Plug 'w0rp/ale'							  " linter
+Plug 'Chiel92/vim-autoformat'
 Plug 'octol/vim-cpp-enhanced-highlight'   " additional c++ highlighting
 Plug 'derekwyatt/vim-fswitch'
 
@@ -125,43 +130,60 @@ let g:fzf_buffers_jump = 1
 let g:fzf_preview_window = 'right:70%'
 let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.7, 'yoffset': 0.2, 'border': 'right' } }
 
-function! s:find_files()
+function! s:find_home_files()
 	let l:bat_options = '--preview=bat --style=plain --color=always {}'
 	let l:fzf_options = [
-	\		'--border',
-	\		'--margin=0',
-	\		'--inline-info',
-	\		'--reverse',
-	\		'--tabstop=4',
-	\		'--black',
-	\		l:bat_options,
-	\		'--preview-window=right:70%' ]
-	call fzf#run(fzf#wrap({ 'source': 'ag --ignore lib -g ./', 'options': fzf_options } ))
+				\		'--border',
+				\		'--margin=0',
+				\		'--inline-info',
+				\		'--reverse',
+				\		'--tabstop=4',
+				\		'--black',
+				\		l:bat_options,
+				\		'--preview-window=right:70%' ]
+	call fzf#run(fzf#wrap({ 'source': 'ag -g '''' ~', 'options': fzf_options } ))
 endfunction
-command! -bang -nargs=0 -complete=dir Files call s:find_files()
+
+function! s:find_local_files()
+	let l:bat_options = '--preview=bat --style=plain --color=always {}'
+	let l:fzf_options = [
+				\		'--border',
+				\		'--margin=0',
+				\		'--inline-info',
+				\		'--reverse',
+				\		'--tabstop=4',
+				\		'--black',
+				\		l:bat_options,
+				\		'--preview-window=right:70%' ]
+	call fzf#run(fzf#wrap({ 'source': 'ag --ignore lib -g '''' ./', 'options': fzf_options } ))
+endfunction
+
+command! -bang -nargs=0 -complete=dir FindLocalFiles call s:find_local_files()
+command! -bang -nargs=0 -complete=dir FindHomeFiles call s:find_home_files()
 
 command! -bang -nargs=* -complete=dir BTags
-	\ call fzf#vim#buffer_tags(
-	\	<q-args>,
-	\	{ 'options': [
-	\		'--border',
-	\		'--margin=0',
-	\		'--inline-info',
-	\		'--reverse',
-	\		'--tabstop=2',
-	\		'--black' ] },
-	\	<bang>0)
+			\ call fzf#vim#buffer_tags(
+			\	<q-args>,
+			\	{ 'options': [
+			\		'--border',
+			\		'--margin=0',
+			\		'--inline-info',
+			\		'--reverse',
+			\		'--tabstop=2',
+			\		'--black' ] },
+			\	<bang>0)
 
 command! -bang -nargs=* -complete=dir Lines
-	\ call fzf#vim#lines(
-	\	<q-args>,
-	\	{ 'options': [
-	\		'--reverse',
-	\		'--tabstop=2',
-	\		'--black' ] },
-	\	<bang>0)
+			\ call fzf#vim#lines(
+			\	<q-args>,
+			\	{ 'options': [
+			\		'--reverse',
+			\		'--tabstop=2',
+			\		'--black' ] },
+			\	<bang>0)
 
-nnoremap <c-f> :Files<CR>
+nnoremap <c-f> :FindLocalFiles<CR>
+"nnoremap <c-s-f> :FindHomeFiles<Cr>	" these keybindings are conflicting
 nnoremap <c-t> :BTags<CR>
 nnoremap // :Lines<CR>
 
@@ -172,21 +194,37 @@ let g:livepreview_previewer = 'qpdfview'
 
 set signcolumn=yes
 let g:gitgutter_set_sign_backgrounds = 1
+set updatetime=750
 highlight clear SignColumn
 
-" this is also linting, which is giving me bad warnings/errors
-"call neomake#configure#automake('nw', 1000)
+autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
+command! -nargs=0 W Autoformat | w
 
-nnoremap  <F5> :!make run<CR>
-nnoremap  <F6> :!make test<CR>
-nnoremap  <F7> :NERDTreeToggle<CR>
-nnoremap  <F8> :TagbarToggle<CR>
-nnoremap  <F9> zR
-nnoremap <F10> zM
-nnoremap <F11> :set nu!<CR>
+"F1-F3 reserved for groupware
+nnoremap  <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina!\ push lazygit<cr>
+
+" this is a problem with asyncrun: pos=tab & focus=0 assumes making a new tab on the right
+function AutoMake(message, make)
+	let size = tabpagenr("$")
+	let old_tab = tabpagenr()
+
+	execute 'AsyncRun -mode=terminal -pos=TAB -reuse -post=echo\ "' . a:message . '" make ' . a:make
+	execute '0tabm'
+
+	let new_tab = old_tab + tabpagenr("$") - size
+	execute 'normal ' . new_tab . 'gt'
+endfunction
+
+nnoremap  <F5> :call AutoMake('Finished\ Build', 'run')<cr><c-\><c-n>
+nnoremap  <F6> :call AutoMake('Finished\ Tests', 'test')<cr><c-\><c-n>
+nnoremap  <F7> :call AutoMake('Finished\ Clean\ Build', 'all')<cr><c-\><c-n>
+
+nnoremap <F10> :MundoToggle<cr>
+nnoremap <F11> :NERDTreeToggle<CR>
+nnoremap <F12> :TagbarToggle<CR>
 
 let g:tagbar_autofocus = 1
-let g:tagbar_wrap = 1
+"let g:tagbar_wrap = 1
 
 command -nargs=0 T set nonu | exe "te" | exe "startinsert"
 command -nargs=0 TLeft vs | set nonu | exe "te" | exe "startinsert"

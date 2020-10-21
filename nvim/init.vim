@@ -198,10 +198,7 @@ set updatetime=750
 highlight clear SignColumn
 
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
-command! -nargs=0 W Autoformat | w
-
-"F1-F3 reserved for groupware
-nnoremap  <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina!\ push lazygit<cr>
+command! -nargs=0 WW Autoformat | w
 
 " this is a problem with asyncrun: pos=tab & focus=0 assumes making a new tab on the right
 function AutoMake(message, make)
@@ -214,6 +211,9 @@ function AutoMake(message, make)
 	let new_tab = old_tab + tabpagenr("$") - size
 	execute 'normal ' . new_tab . 'gt'
 endfunction
+
+"F1-F3 reserved for groupware
+nnoremap  <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina\ push lazygit<cr>
 
 nnoremap  <F5> :call AutoMake('Finished\ Build', 'run')<cr><c-\><c-n>
 nnoremap  <F6> :call AutoMake('Finished\ Tests', 'test')<cr><c-\><c-n>

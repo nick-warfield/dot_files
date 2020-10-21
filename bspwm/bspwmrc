@@ -26,6 +26,7 @@ bspc monitor -d 1 2 3 4 5 6 7 8 9 10
 bspc rule -a mars_mechs state=floating
 bspc rule -a natww state=floating
 bspc rule -a Vulkan state=floating
+bspc rule -a Navigator, firefox state=floating
 
 xrandr --output HDMI-0 --auto
 picom --vsync &

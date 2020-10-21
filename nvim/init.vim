@@ -74,9 +74,10 @@ Plug 'lambdalisue/gina.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'tpope/vim-surround'
 Plug 'gioele/vim-autoswap'
+Plug 'farmergreg/vim-lastplace'
 Plug 'ludovicchabant/vim-gutentags'
 Plug 'skywind3000/asyncrun.vim'
-Plug 'simnalamburt/vim-mundo'
+Plug 'simnalamburt/vim-mundo', { 'on': 'MundoToggle' }
 
 " Fast File and Tag Finding
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }

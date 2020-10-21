@@ -1,5 +1,6 @@
 # my aliases
 alias v='nvim'
+alias vrc='nvim ~/.config/nvim/init.vim'
 alias rm='echo "Did you mean trash (t)?"; false'
 alias t='trash'
 alias r='ranger'

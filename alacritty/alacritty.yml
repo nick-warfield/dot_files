@@ -1,0 +1,20 @@
+font:
+    size: 13.0
+
+window:
+    padding:
+        x: 40
+        y: 30
+
+mouse:
+    hide_when_typing: true
+
+colors:
+    primary:
+        background: '0x1f1d18'
+
+background_opacity: 0.8
+
+key_bindings:
+    - { key: F, mods: Control|Shift, action: ReceiveChar }
+    - { key: B, mods: Control|Shift, action: ReceiveChar }

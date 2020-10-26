@@ -9,7 +9,7 @@ bspc config focused_border_color \#99d5b8
 bspc config window_gap 50
 bspc config left_padding 50
 bspc config right_padding 50
-bspc config top_padding 50
+bspc config top_padding 20
 bspc config bottom_padding 0
 
 bspc config single_monocle true
@@ -20,21 +20,18 @@ bspc config split_ratio 0.5
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
 
-bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+bspc monitor -d a b c d e
 
 # game projects
 bspc rule -a mars_mechs state=floating
 bspc rule -a natww state=floating
 bspc rule -a Vulkan state=floating
+bspc rule -a vulkanExample,* state=floating
 bspc rule -a Navigator, firefox state=floating
 
-xrandr --output HDMI-0 --auto
-picom --vsync &
-sxhkd &
-udiskie &
-wal -ni ~/Pictures/no_mans_sky.jpg -a "80" -b "#1F1D19"
+wal -ni ~/Pictures/snowy_mountains.jpg -a "80" -b "#1F1D19"
 ~/.fehbg &
-~/.config/polybar/launch.sh
+~/.config/bspwm/init.sh
 
 #xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
 xset r rate 325 45

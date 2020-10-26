@@ -18,22 +18,160 @@
 
 [colors]
 ;background = ${xrdb:color0:#222}
-background = #222
-background-alt = #444
+background = #77806A78
+background-alt = #bb806A78
 ;foreground = ${xrdb:color7:#222}
-foreground = #dfdfdf
-foreground-alt = #555
+foreground = #D4FFFC
+foreground-alt = #D4FFFC
 primary = #ffb52a
 secondary = #e60053
 alert = #bd2c40
 
+[bar/desktops]
+wm-restack = bspwm
+width = 300
+height = 40
+offset-x = 7%:340
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = bspwm
+
+[bar/clock]
+wm-restack = bspwm
+width = 80
+height = 40
+offset-x = 7%
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = time
+
+[bar/date]
+wm-restack = bspwm
+width = 200
+height = 40
+offset-x = 7%:110
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = date
+
+[bar/music]
+wm-restack = bspwm
+width = 500
+height = 40
+offset-x = 100%:-530
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+separator = \
+module-margin = 2
+
+font-0 = Noto Sans:sytle=Bold
+font-1 = Noto Sans:sytle=Bold
+font-2 = Noto Color Emoji:sytle=Regular:scale=7
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = audio spotify
+
+[bar/network]
+wm-restack = bspwm
+width = 300
+height = 40
+offset-x = 100%:-1240
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+module-margin = 2
+
+font-0 = Noto Sans:sytle=Bold
+font-1 = Noto Sans:sytle=Bold
+font-2 = Noto Color Emoji:sytle=Regular:scale=7
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = network
+
+[bar/weather]
+wm-restack = bspwm
+width = 50
+height = 40
+offset-x = 7%:-80
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+module-margin = 2
+
+# Fonts not showing up even though they are installed
+# because they are in /usr/share/fonts/TTF instead of /usr/share/fonts ?
+font-0 = Weather Icons:size=12;1
+font-1 = Weather Icons:size=12;1
+font-2 = Weather Icons:size=12;1
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = weather
+
+[bar/bluetooth]
+wm-restack = bspwm
+width = 350
+height = 40
+offset-x = 100%:-910
+offset-y = 15
+radius = 20
+fixed-center = true
+override-redirect = true
+separator = \
+module-margin = 2
+
+font-0 = Noto Sans:sytle=Bold
+font-1 = Noto Sans:sytle=Bold
+font-2 = Noto Color Emoji:sytle=Regular:scale=7
+
+background = ${colors.background}
+foreground = ${colors.foreground}
+padding-left = 50
+padding-right = 50
+modules-center = bluetooth
+
+
 [bar/example]
 ;monitor = ${env:MONITOR:HDMI-1}
-width = 100%:-200
-height = 50
-offset-x = 100
-offset-y = 25
-radius = 0.0
+width = 40%
+height = 40
+offset-x = 30%
+offset-y = 0
+radius-top = 0
+radius-bottom = 20.0
 fixed-center = true
 override-redirect = true
 
@@ -46,8 +184,8 @@ line-color = #f00
 ;border-size = 5
 ;border-color = #330000
 
-padding-left = 0
-padding-right = 2
+padding-left = 50
+padding-right = 50
 
 module-margin-left = 1
 module-margin-right = 2
@@ -60,7 +198,7 @@ modules-left = bspwm
 modules-center = 
 modules-right = xbacklight pulseaudio wlan eth battery date
 
-tray-position = right
+tray-position = center
 tray-padding = 2
 ;tray-background = #0063ff
 
@@ -83,6 +221,12 @@ label = %title:0:30:...%
 [module/bspwm]
 type = internal/bspwm
 
+;ws-icon-0=a;I
+;ws-icon-1=b;II
+;ws-icon-2=c;III
+;ws-icon-3=d;IV
+;ws-icon-4=e;V
+
 label-focused = %index%
 label-focused-background = ${colors.background-alt}
 label-focused-underline= ${colors.primary}
@@ -102,42 +246,6 @@ label-empty-padding = 2
 ; Separator in between workspaces
 ; label-separator = |
 
-[module/i3]
-type = internal/i3
-format = <label-state> <label-mode>
-index-sort = true
-wrapping-scroll = false
-
-; Only show workspaces on the same output as the bar
-;pin-workspaces = true
-
-label-mode-padding = 2
-label-mode-foreground = #000
-label-mode-background = ${colors.primary}
-
-; focused = Active workspace on focused monitor
-label-focused = %index%
-label-focused-background = ${colors.background-alt}
-label-focused-underline= ${colors.primary}
-label-focused-padding = 2
-
-; unfocused = Inactive workspace on any monitor
-label-unfocused = %index%
-label-unfocused-padding = 2
-
-; visible = Active workspace on unfocused monitor
-label-visible = %index%
-label-visible-background = ${self.label-focused-background}
-label-visible-underline = ${self.label-focused-underline}
-label-visible-padding = ${self.label-focused-padding}
-
-; urgent = Workspace with urgency hint set
-label-urgent = %index%
-label-urgent-background = ${colors.alert}
-label-urgent-padding = 2
-
-; Separator in between workspaces
-; label-separator = |
 
 [module/xbacklight]
 type = internal/xbacklight
@@ -195,17 +303,71 @@ format-disconnected =
 ;label-disconnected = %ifname% disconnected
 ;label-disconnected-foreground = ${colors.foreground-alt}
 
-[module/date]
+[module/time]
 type = internal/date
 interval = 1
 
-date = "%a %d %b, %l:%M%P"
+date = "%l:%M %P"
 
-format-prefix = 
+;format-prefix = 
 format-prefix-foreground = ${colors.foreground-alt}
 format-underline = #0a6cf5
 
 label = %date%
+
+[module/date]
+type = internal/date
+interval = 1
+
+date = "%A, %B %d"
+
+;format-prefix = 
+format-prefix-foreground = ${colors.foreground-alt}
+format-underline = #0a6cf5
+
+label = %date%
+
+[module/network]
+type = custom/script
+exec = ~/.config/polybar/scripts/polybar-scripts/polybar-scripts/network-networkmanager/network-networkmanager.sh
+tail = true
+
+
+[module/weather]
+type = custom/script
+exec = ~/.config/polybar/scripts/polybar-scripts/polybar-scripts/openweathermap-simple/openweathermap-simple.sh
+
+interval = 600
+label-font = 2
+
+[module/bluetooth]
+type = custom/script
+exec = ~/.config/polybar/scripts/polybar-scripts/polybar-scripts/system-bluetooth-bluetoothctl/system-bluetooth-bluetoothctl.sh
+tail = true
+;click-left = ~/.config/polybar/scripts/polybar-scripts/polybar-scripts/system-bluetooth-bluetoothctl/system-bluetooth-bluetoothctl.sh --toggle &
+
+[module/spotify]
+type = custom/script
+interval = 1
+;format-prefix = ": "
+format = <label>
+exec = python ~/.config/polybar/scripts/polybar-spotify/spotify_status.py -p '>,^' -f '{play_pause} {artist}: {song}'
+
+[module/audio]
+type = custom/script
+tail = true
+label=%output%
+
+path = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash
+exec = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash listen
+
+click-right = exec pavucontrol &
+click-left = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash togmute
+click-middle = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash next-sink
+scroll-up = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash up
+scroll-down = ~/.config/polybar/scripts/polybar-pulseaudio-control/pulseaudio-control.bash down
+label-padding = 2
+label-foreground = ${colors.foreground}
 
 [module/pulseaudio]
 type = internal/pulseaudio
@@ -227,11 +389,11 @@ bar-volume-foreground-5 = #f5a70a
 bar-volume-foreground-6 = #ff5555
 bar-volume-gradient = false
 bar-volume-indicator = |
-bar-volume-indicator-font = 2
-bar-volume-fill = ─
-bar-volume-fill-font = 2
-bar-volume-empty = ─
-bar-volume-empty-font = 2
+bar-volume-indicator-font = 1
+bar-volume-fill = ~
+bar-volume-fill-font = 1
+bar-volume-empty = -
+bar-volume-empty-font = 1
 bar-volume-empty-foreground = ${colors.foreground-alt}
 
 [module/battery]

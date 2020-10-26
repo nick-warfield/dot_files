@@ -1,6 +1,7 @@
 " TODO:
 "	- load large files faster
 "	- Fold by ctags?
+"	- vim-file fold pluging
 "
 "	- customize status bar
 "	- customize tab bar
@@ -27,6 +28,8 @@ Plug 'skywind3000/asyncrun.vim'
 Plug 'neovim/pynvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'vim-airline/vim-airline'
+"Plug 'gcmt/taboo.vim'
 
 " Git Integration
 Plug 'lambdalisue/gina.vim'
@@ -61,8 +64,34 @@ Plug 'plasticboy/vim-markdown'
 Plug 'keith/swift.vim'
 Plug 'mlr-msft/vim-loves-dafny'
 
+
 call plug#end()
 let g:python3_host_prog='/usr/bin/python'
+
+
+" airline config
+"let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#formatter = 'unique_tail'
+let g:airline_extensions = [ 'ale', 'gina' ]
+let g:airline#extensions#ale#enabled = 1
+let g:airline#extensions#ale#error_symbol = 'E:'
+
+let g:airline#extensions#gina#enabled = 1
+let g:airline#extensions#branch#enabled = 1
+
+let g:airline_stl_path_style = 'short'
+
+"let g:airline#extensions#default#layout = [
+"      \ [ 'a', 'b', 'c' ],
+"      \ [ 'x', 'y', 'z', 'error', 'warning' ]
+"      \ ]
+
+let g:asyncrun_status = "asyncrun"
+let g:airline_section_error =
+			\ airline#section#create_right(['%{g:asyncrun_status}'])
+
+" taboo config
+
 
 " ncm2 config
 autocmd BufEnter * call ncm2#enable_for_buffer()
@@ -131,20 +160,9 @@ command! -bang -nargs=* -complete=dir Lines
 			\		'--black' ] },
 			\	<bang>0)
 
+
 " Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
-
-" this is a problem with asyncrun: pos=tab & focus=0 assumes making a new tab on the right
-function AutoMake(message, make)
-	let size = tabpagenr("$")
-	let old_tab = tabpagenr()
-
-	execute 'AsyncRun -mode=terminal -pos=TAB -reuse -post=echo\ "' . a:message . '" make ' . a:make
-	execute '0tabm'
-
-	let new_tab = old_tab + tabpagenr("$") - size
-	execute 'normal ' . new_tab . 'gt'
-endfunction
 
 " Tagbar + Nerdtree Config
 let g:tagbar_autofocus = 1
@@ -155,13 +173,14 @@ let NERDTreeIgnore = ['\.class$']
 let personal_wiki = {}
 let personal_wiki.path = '~/Documents/notes'
 let personal_wiki.path_html = '~/Documents/notes/html'
-let personal_wiki.syntax = 'default'
+let personal_wiki.syntax = 'markdown'
+let personal_wiki.ext = 'md'
 let personal_wiki.auto_export = 1
 
 let high_seas_wiki = {}
 let high_seas_wiki.path = '~/Documents/high_seas'
 let high_seas_wiki.path_html = '~/Documents/high_seas/html'
-let high_seas_wiki.syntax = 'default'
+"let high_seas_wiki.syntax = 'default'
 let high_seas_wiki.auto_export = 1
 
 let g:vimwiki_list = [personal_wiki, high_seas_wiki]
@@ -169,8 +188,8 @@ let g:vimwiki_list = [personal_wiki, high_seas_wiki]
 " Folds Config
 augroup remember_folds
   autocmd!
-  autocmd BufWinLeave * mkview
-  autocmd BufWinEnter * silent! loadview
+  autocmd BufWinLeave *.vim mkview
+  autocmd BufWinEnter *.vim silent! loadview
 augroup END
 
 function! NeatFoldText()
@@ -186,12 +205,29 @@ endfunction
 
 " Fold Text
 set foldtext=NeatFoldText()
-set fillchars=fold:\ 
+set fillchars=fold:\ "Comment for single space
 highlight Folded cterm=italic ctermbg=None ctermfg=Yellow
 
 " Fold Methods
 set foldmethod=syntax
 autocmd Filetype vim setlocal foldmethod=manual
+
+
+
+" Custom Functions
+" AutoMake: AsyncRun focus=0 work around
+" this is a problem with asyncrun: pos=tab & focus=0 assumes making a new tab on the right
+function AutoMake(message, make)
+	let size = tabpagenr("$")
+	let old_tab = tabpagenr()
+
+	execute 'AsyncRun -mode=terminal -pos=TAB -reuse -post=echo\ "' . a:message . '" make ' . a:make
+	execute '0tabm'
+
+	let new_tab = old_tab + tabpagenr("$") - size
+	execute 'normal ' . new_tab . 'gt'
+endfunction
+
 
 " Custom Commands
 command! -nargs=0 WW
@@ -201,20 +237,25 @@ command! -bang -nargs=0 -complete=dir FindLocalFiles
 command! -bang -nargs=0 -complete=dir FindHomeFiles
 			\ call s:find_home_files()
 
-command -nargs=0 T
+command! -nargs=0 T
 			\ set nonu | exe "te" | exe "startinsert"
-command -nargs=0 TLeft
+command! -nargs=0 TLeft
 			\ vs | set nonu | exe "te" | exe "startinsert"
-command -nargs=0 TRight
+command! -nargs=0 TRight
 			\ vs | exe "normal! <C-w>l" | set nonu | exe "te" | exe "startinsert"
-command -nargs=0 TUp
+command! -nargs=0 TUp
 			\ split | set nonu | exe "te" | exe "startinsert"
-command -nargs=0 TDown
+command! -nargs=0 TDown
 			\ split | exe "normal! <C-w>j" | set nonu | exe "te" | exe "startinsert"
-command -nargs=0 TTab
+command! -nargs=0 TTab
 			\ tabe | set nonu | exe "te" | exe "startinsert"
 
-command -nargs=0 FS FSHere
+command! -nargs=0 FS FSHere
+
+command! -nargs=0 RRC
+			\ mkview
+			\ | silent! so $MYVIMRC
+			\ | loadview
 
 " Custom Key Bindings
 " Additional escape sequences
@@ -257,6 +298,7 @@ inoremap <c-t> <Esc><c-]>
 nnoremap // :Lines<CR>
 
 " Function Keys
+nnoremap <silent> <F1> :VimwikiIndex<cr>
 "F1-F3 reserved for groupware
 nnoremap <silent> <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina\ push lazygit<cr>
 
@@ -270,6 +312,8 @@ nnoremap <silent> <F12> :TagbarToggle<CR>
 
 " Misc
 nnoremap <silent> <Space> za
+
+
 
 " Global Settings
 set showmatch
@@ -297,5 +341,8 @@ let g:rust_fold = 1
 
 let g:livepreview_previewer = 'qpdfview'
 
+let g:vim_markdown_follow_anchor = 1
+
 let g:calendar_google_calendar = 1
 let g:calendar_google_task = 1
+

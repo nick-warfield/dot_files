@@ -2,6 +2,7 @@
 
 # exit bspwm
 super + shift + Escape
+	~/.config/bspwm/cleanup.sh
 	bspc quit
 
 # restart bspwm
@@ -30,6 +31,13 @@ super + Tab
 super + shift + Tab
 	bspc desktop -f prev
 
+# switch desktops
+super + {1-9,0}
+	bspc desktop -f ^{1-9,10}
+# move window to desktop
+super + shift + {1-9,0}
+	bspc node -d ^{1-9,10}
+
 # toggle fullscreen/floating
 super + f
 	bspc node -t \~floating
@@ -53,14 +61,6 @@ super + shift + space
 # switch/move window
 super + {_,shift +}{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
-
-# switch desktop
-super + {1-9,0}
-	bspc desktop -f {1-9,10}
-
-# move window to desktop
-super + shift + {1-9,0}
-	bspc node -d {1-9,10}
 
 # volume hotkeys
 {XF86AudioLowerVolume}

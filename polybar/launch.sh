@@ -1,20 +1,11 @@
 #!/bin/sh
 
 pkill polybar
-polybar example &
-
-pkill nm-applet
-nm-applet &
-
-pkill blueman-applet
-blueman-applet &
-
-pkill pasystray
-pasystray &
-
-pkill psensor
-psensor &
-
-#pkill light-locker
-#light-locker &
+polybar desktops &
+polybar clock &
+polybar date &
+polybar music &
+polybar bluetooth &
+polybar weather &
+polybar network &
 

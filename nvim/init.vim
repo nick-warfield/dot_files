@@ -21,13 +21,16 @@
 call plug#begin('~/.config/nvim/plugged')
 
 "General Goodies
+Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
 Plug 'gioele/vim-autoswap'
 Plug 'farmergreg/vim-lastplace'
 Plug 'skywind3000/asyncrun.vim'
+Plug 'voldikss/vim-floaterm'
 Plug 'neovim/pynvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'vim-airline/vim-airline'
 "Plug 'gcmt/taboo.vim'
 
@@ -64,10 +67,13 @@ Plug 'plasticboy/vim-markdown'
 Plug 'keith/swift.vim'
 Plug 'mlr-msft/vim-loves-dafny'
 
+Plug 'junegunn/goyo.vim'
+"Plug 'enricobacis/vim-airline-clock'
 
 call plug#end()
 let g:python3_host_prog='/usr/bin/python'
 
+let gutentags_cache_dir='~/.cache/nvim/gutentags'
 
 " airline config
 "let g:airline#extensions#tabline#enabled = 1
@@ -98,6 +104,7 @@ autocmd BufEnter * call ncm2#enable_for_buffer()
 set completeopt=noinsert,menuone,noselect
 inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
 inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
+inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
 
 " ale config
 let g:ale_linters = { 'cpp': ['clang++'], 'c': ['clang'], }
@@ -163,6 +170,9 @@ command! -bang -nargs=* -complete=dir Lines
 
 " Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
+autocmd BufNewFile,BufRead *.tpp set filetype=cpp
+autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,tpp'
+autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
 
 " Tagbar + Nerdtree Config
 let g:tagbar_autofocus = 1
@@ -184,6 +194,20 @@ let high_seas_wiki.path_html = '~/Documents/high_seas/html'
 let high_seas_wiki.auto_export = 1
 
 let g:vimwiki_list = [personal_wiki, high_seas_wiki]
+
+" disable tab mappings so autocomplete works
+let g:vimwiki_key_mappings = {
+            \ 'all_maps': 1,
+            \ 'global': 1,
+            \ 'headers': 1,
+            \ 'text_objs': 1,
+            \ 'table_format': 1,
+            \ 'table_mappings': 0,
+            \ 'lists': 1,
+            \ 'links': 1,
+            \ 'html': 1,
+            \ 'mouse': 0,
+            \ }
 
 " Folds Config
 augroup remember_folds
@@ -211,23 +235,6 @@ highlight Folded cterm=italic ctermbg=None ctermfg=Yellow
 " Fold Methods
 set foldmethod=syntax
 autocmd Filetype vim setlocal foldmethod=manual
-
-
-
-" Custom Functions
-" AutoMake: AsyncRun focus=0 work around
-" this is a problem with asyncrun: pos=tab & focus=0 assumes making a new tab on the right
-function AutoMake(message, make)
-	let size = tabpagenr("$")
-	let old_tab = tabpagenr()
-
-	execute 'AsyncRun -mode=terminal -pos=TAB -reuse -post=echo\ "' . a:message . '" make ' . a:make
-	execute '0tabm'
-
-	let new_tab = old_tab + tabpagenr("$") - size
-	execute 'normal ' . new_tab . 'gt'
-endfunction
-
 
 " Custom Commands
 command! -nargs=0 WW
@@ -259,7 +266,7 @@ command! -nargs=0 RRC
 
 " Custom Key Bindings
 " Additional escape sequences
-noremap <a-[> <c-[>
+inoremap <a-[> <c-[>
 tnoremap <a-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
 
@@ -281,6 +288,10 @@ inoremap <silent> <S-M-K> <Esc>:w <bar> wincmd k<CR>
 inoremap <silent> <S-M-L> <Esc>:w <bar> wincmd l<CR>
 inoremap <silent> <S-M-H> <Esc>:w <bar> wincmd h<CR>
 
+" Terminal Creation
+nnoremap <silent> t :FloatermToggle<CR>
+nnoremap <silent> T :T<CR>
+
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
 nnoremap <silent> <c-k> :m .-2<CR>==
@@ -300,11 +311,11 @@ nnoremap // :Lines<CR>
 " Function Keys
 nnoremap <silent> <F1> :VimwikiIndex<cr>
 "F1-F3 reserved for groupware
-nnoremap <silent> <F4> :AsyncRun -mode=terminal -pos=TAB -pre=Gina\ pull -post=tabclose\ <bar>\ Gina\ push lazygit<cr>
+nnoremap <silent> <F4> :FloatermNew --autoinsert=true --height=0.95 --width=0.95 --wintype=float --autoclose=1 --title=lazygit lazygit<cr>
 
-nnoremap <silent> <F5> :call AutoMake('Finished\ Build', 'run')<cr><c-\><c-n>
-nnoremap <silent> <F6> :call AutoMake('Finished\ Tests', 'test')<cr><c-\><c-n>
-nnoremap <silent> <F7> :call AutoMake('Finished\ Clean\ Build', 'all')<cr><c-\><c-n>
+nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
+nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=tests make test<cr>
+nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
 
 nnoremap <silent> <F10> :MundoToggle<cr>
 nnoremap <silent> <F11> :NERDTreeToggle<CR>
@@ -312,10 +323,11 @@ nnoremap <silent> <F12> :TagbarToggle<CR>
 
 " Misc
 nnoremap <silent> <Space> za
-
-
+nnoremap <silent> j gj
+nnoremap <silent> k gk
 
 " Global Settings
+set termguicolors
 set showmatch
 set ignorecase
 set hlsearch
@@ -330,6 +342,9 @@ set autoread
 set mouse=a
 set undofile
 set undodir=~/.cache/nvim/undo_history/
+
+colorscheme gruvbox
+hi FloatermBorder guibg=bg guifg=fg
 
 set signcolumn=yes
 set updatetime=750

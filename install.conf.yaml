@@ -1,0 +1,21 @@
+- defaults:
+    link:
+      relink: true
+      create: true
+      force: true
+
+- clean:
+    ~/.config:
+      recursive: true
+
+- link:
+    ~/.config/nvim/init.vim: nvim/init.vim
+    ~/.config/alacritty/alacritty.yml: alacritty/alacritty.yml
+    ~/.config/bspwm/:
+      glob: true
+      path: bspwm/*
+    ~/.config/btops/config.toml: btops/config.toml
+    ~/.config/sxhkd/sxhkdrc: sxhkd/sxhkdrc
+    ~/.config/polybar/:
+      glob: true
+      path: polybar/*

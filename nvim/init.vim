@@ -7,8 +7,8 @@
 "	- customize tab bar
 "	- clock
 "
-"	- better cpp syntax highlighting (highlight stuff from libs)
-"	- function declaration preview
+"	- clear background hilights in plugins
+"	- use custom signs in ALE, gitgutter, etc
 "
 "	- custom home page
 "	- better markdown highlighting and formating
@@ -16,6 +16,7 @@
 "	- email?
 "	- calendar?
 
+" Plugins
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
   silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
@@ -27,7 +28,6 @@ autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
   \| PlugInstall --sync | source $MYVIMRC
 \| endif
 
-" Plugins
 call plug#begin('~/.config/nvim/plugged')
 
 "General Goodies
@@ -40,23 +40,25 @@ Plug 'voldikss/vim-floaterm'
 Plug 'neovim/pynvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'powerman/vim-plugin-AnsiEsc'
 Plug 'vim-airline/vim-airline'
+
 "Plug 'gcmt/taboo.vim'
+"Plug 'mhinz/vim-startify'
+"Plug 'skywind3000/vim-quickui'
 
 " Git Integration
 Plug 'lambdalisue/gina.vim'
 Plug 'airblade/vim-gitgutter'
 
-" Project Viewing
+" Dev Tools
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
-Plug 'simnalamburt/vim-mundo', { 'on': 'MundoToggle' }
+Plug 'w0rp/ale'
+"Plug 'puremourning/vimspector'
 
 " cpp enhancements
-Plug 'w0rp/ale'							  " linter
 Plug 'Chiel92/vim-autoformat'
-Plug 'octol/vim-cpp-enhanced-highlight'   " additional c++ highlighting
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'ludovicchabant/vim-gutentags'
 
@@ -70,30 +72,38 @@ Plug 'ncm2/ncm2-pyclang'
 " Groupware
 Plug 'vimwiki/vimwiki'
 Plug 'itchyny/calendar.vim'
+Plug 'enricobacis/vim-airline-clock'
+
+" Writing
+Plug 'junegunn/goyo.vim'
+"proselint (pip)
 
 " Language Support
 Plug 'xuhdev/vim-latex-live-preview'
 Plug 'plasticboy/vim-markdown'
 Plug 'keith/swift.vim'
 Plug 'mlr-msft/vim-loves-dafny'
-
-Plug 'junegunn/goyo.vim'
-"Plug 'enricobacis/vim-airline-clock'
+Plug 'powerman/vim-plugin-AnsiEsc'
 
 call plug#end()
-let g:python3_host_prog='/usr/bin/python'
 
+let g:python3_host_prog='/usr/bin/python'
 let gutentags_cache_dir='~/.cache/nvim/gutentags'
 
 " airline config
 "let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_extensions = [ 'ale', 'gina' ]
-let g:airline#extensions#ale#enabled = 1
-let g:airline#extensions#ale#error_symbol = 'E:'
-
-let g:airline#extensions#gina#enabled = 1
+let g:airline_extensions = [ 'gina', 'asyncrun', 'clock' ]
 let g:airline#extensions#branch#enabled = 1
+
+call airline#parts#define_function('gina', 'gina#component#repo#branch')
+let g:airline_section_b = airline#section#create(['hunks', g:airline_symbols.branch, ' ','gina'])
+
+"let g:airline#extensions#ale#enabled = 1
+"let g:airline#extensions#ale#error_symbol = 'E:'
+"
+"let g:airline#extensions#gina#enabled = 1
+"let g:airline#extensions#branch#enabled = 1
 
 let g:airline_stl_path_style = 'short'
 
@@ -102,9 +112,9 @@ let g:airline_stl_path_style = 'short'
 "      \ [ 'x', 'y', 'z', 'error', 'warning' ]
 "      \ ]
 
-let g:asyncrun_status = "asyncrun"
-let g:airline_section_error =
-			\ airline#section#create_right(['%{g:asyncrun_status}'])
+"let g:asyncrun_status = "asyncrun"
+"let g:airline_section_error =
+"			\ airline#section#create_right(['%{g:asyncrun_status}'])
 
 " taboo config
 
@@ -183,6 +193,12 @@ autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove
 autocmd BufNewFile,BufRead *.tpp set filetype=cpp
 autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,tpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
+
+" Auto build and test
+autocmd BufWrite *.rs :AsyncRun cargo build
+autocmd BufWrite *.rs :AsyncRun cargo test
+autocmd BufWrite *.*pp :AsyncRun make
+autocmd BufWrite *.*pp :AsyncRun make test
 
 " Tagbar + Nerdtree Config
 let g:tagbar_autofocus = 1
@@ -327,7 +343,6 @@ nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=81 --
 nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=tests make test<cr>
 nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
 
-nnoremap <silent> <F10> :MundoToggle<cr>
 nnoremap <silent> <F11> :NERDTreeToggle<CR>
 nnoremap <silent> <F12> :TagbarToggle<CR>
 

@@ -1,21 +1,3 @@
-" TODO:
-"	- load large files faster
-"	- Fold by ctags?
-"	- vim-file fold pluging
-"
-"	- customize status bar
-"	- customize tab bar
-"	- clock
-"
-"	- clear background hilights in plugins
-"	- use custom signs in ALE, gitgutter, etc
-"
-"	- custom home page
-"	- better markdown highlighting and formating
-"	- plaintext file sync
-"	- email?
-"	- calendar?
-
 " Plugins
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -69,6 +51,8 @@ autocmd BufNewFile,BufRead *.tpp set filetype=cpp
 autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
 
+" auto set up new wikis/todos for projects
+" autodetect wikis made manually
 " Vimwiki Config
 let personal_wiki = {}
 let personal_wiki.path = '~/Documents/notes'
@@ -131,17 +115,17 @@ command! -nargs=0 WW
 			\ Autoformat | w
 
 command! -nargs=0 T
-			\ set nonu | exe "te" | exe "startinsert"
+			\ set nonu | set signcolumn=no | exe "te" | exe "startinsert"
 command! -nargs=0 TLeft
-			\ vs | set nonu | exe "te" | exe "startinsert"
+			\ vs | exe "T"
 command! -nargs=0 TRight
-			\ vs | exe "normal! <C-w>l" | set nonu | exe "te" | exe "startinsert"
+			\ vs | exe "normal! <C-w>l" | exe "T"
 command! -nargs=0 TUp
-			\ split | set nonu | exe "te" | exe "startinsert"
+			\ sp | exe "T"
 command! -nargs=0 TDown
-			\ split | exe "normal! <C-w>j" | set nonu | exe "te" | exe "startinsert"
+			\ sp | exe "normal! <C-w>j" | exe "T"
 command! -nargs=0 TTab
-			\ tabe | set nonu | exe "te" | exe "startinsert"
+			\ tabe | exe "T"
 
 command! -nargs=0 FS FSHere
 

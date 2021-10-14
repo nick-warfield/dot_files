@@ -33,96 +33,36 @@ call plug#begin('~/.config/nvim/plugged')
 "General Goodies
 Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 Plug 'gioele/vim-autoswap'
 Plug 'farmergreg/vim-lastplace'
-Plug 'skywind3000/asyncrun.vim'
 Plug 'voldikss/vim-floaterm'
-Plug 'neovim/pynvim'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'vim-airline/vim-airline'
-" https://github.com/rbong/vim-crystalline		" airline replacement
-Plug 'lambdalisue/battery.vim'
 "Plug 'szw/vim-maximizer'
 "Plug 'vim-windowswap'
-
-"Plug 'gcmt/taboo.vim'
-"Plug 'mhinz/vim-startify'
-"Plug 'skywind3000/vim-quickui'
-
-" Git Integration
-Plug 'lambdalisue/gina.vim'
+Plug 'derekwyatt/vim-fswitch'
 Plug 'airblade/vim-gitgutter'
+"Plug 'rbong/vim-crystalline'		" airline replacement
 
 " Dev Tools
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-"Plug 'lambdalisue/fern.vim'			" Nerdtree replacement
-Plug 'majutsushi/tagbar'
-"Plug 'liuchengxu/vista.vim'			" tagbar replacement
-Plug 'w0rp/ale'
-"Plug 'autozimu/LanguageClient-neovim'	" ale replacement
-"Plug 'puremourning/vimspector'
-
-" cpp enhancements
+"Plug 'neovim/nvim-lspconfig'
+"Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+"Plug 'mfussenegger/nvim-dap'
+"Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}		" Autocomplete
+"Plug 'lambdalisue/fern.vim'					" Tree viewer
+"Plug 'glepnir/lspsaga.nvim'					" LSP UI
+"Plug 'rcarriga/nvim-dap-ui'					" Debugger UI
 Plug 'Chiel92/vim-autoformat'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'ludovicchabant/vim-gutentags'
-
-" Autocompletion
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-pyclang'
-
-" Groupware
-Plug 'vimwiki/vimwiki'
-Plug 'itchyny/calendar.vim'
-Plug 'enricobacis/vim-airline-clock'
 
 " Writing
-Plug 'junegunn/goyo.vim'
+Plug 'vimwiki/vimwiki'
+Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 "proselint (pip)
-
-" Language Support
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'xuhdev/vim-latex-live-preview'
-Plug 'plasticboy/vim-markdown'
-Plug 'keith/swift.vim'
-Plug 'mlr-msft/vim-loves-dafny'
-Plug 'powerman/vim-plugin-AnsiEsc'
 
 call plug#end()
 
 let g:python3_host_prog='/usr/bin/python'
 let gutentags_cache_dir='~/.cache/nvim/gutentags'
-
-" airline config
-let g:airline_extensions = [ 'branch', 'asyncrun', 'battery', 'clock' ]
-let g:airline#extensions#tagbar#flags = 's'
-
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_stl_path_style = 'short'
-let g:airline#extensions#tabline#show_close_button = 0
-"let g:airline_statusline_ontop = 1
-"let g:airline_disable_statusline = 1
-"set showtabline=2
-set noshowmode
-set laststatus=0
-set noshowcmd
-set noruler
-
-"let g:airline#extensions#default#layout = [
-"      \ [ 'a', 'b', 'c' ],
-"      \ [ 'x', 'y', 'z', 'error', 'warning' ]
-"      \ ]
-
-"let g:asyncrun_status = "asyncrun"
-"let g:airline_section_error =
-"			\ airline#section#create_right(['%{g:asyncrun_status}'])
-
-" taboo config
-
 
 " ncm2 config
 autocmd BufEnter * call ncm2#enable_for_buffer()

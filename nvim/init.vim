@@ -27,7 +27,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Dev Tools
 Plug 'neovim/nvim-lspconfig'
-"Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
 "Plug 'mfussenegger/nvim-dap'
 "Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}		" Autocomplete
 "Plug 'lambdalisue/fern.vim'					" Tree viewer
@@ -93,6 +93,36 @@ for _, lsp in ipairs(servers) do
 end
 EOF
 
+" Treesitter config
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+  ensure_installed = {
+	  "bash",
+	  "c",
+	  "cmake",
+	  "cpp",
+	  "html",
+	  "json",
+	  "latex",
+	  "lua",
+	  "python",
+	  "rust",
+	  "toml",
+	  "vim",
+	  "yaml",
+	  "zig",
+  },
+}
+EOF
+
 " Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
 autocmd BufNewFile,BufRead *.tpp set filetype=cpp
@@ -152,11 +182,11 @@ endfunction
 " Fold Text
 set foldtext=NeatFoldText()
 set fillchars=fold:\ "Comment for single space
-highlight Folded cterm=italic ctermbg=None ctermfg=Yellow
+highlight Folded cterm=italic guibg=None ctermbg=None ctermfg=Yellow
 
 " Fold Methods
-set foldmethod=syntax
-autocmd Filetype vim setlocal foldmethod=manual
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 
 " Custom Commands
 command! -nargs=0 WW

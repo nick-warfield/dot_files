@@ -41,9 +41,10 @@ Plug 'neovim/pynvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
+" https://github.com/rbong/vim-crystalline		" airline replacement
+Plug 'lambdalisue/battery.vim'
 "Plug 'szw/vim-maximizer'
 "Plug 'vim-windowswap'
-"Plug 'lambdalisue/battery.vim'
 
 "Plug 'gcmt/taboo.vim'
 "Plug 'mhinz/vim-startify'
@@ -97,21 +98,19 @@ let g:python3_host_prog='/usr/bin/python'
 let gutentags_cache_dir='~/.cache/nvim/gutentags'
 
 " airline config
-"let g:airline#extensions#tabline#enabled = 1
+let g:airline_extensions = [ 'branch', 'asyncrun', 'battery', 'clock' ]
+let g:airline#extensions#tagbar#flags = 's'
+
 let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_extensions = [ 'gina', 'asyncrun', 'clock' ]
-let g:airline#extensions#branch#enabled = 1
-
-call airline#parts#define_function('gina', 'gina#component#repo#branch')
-let g:airline_section_b = airline#section#create(['hunks', g:airline_symbols.branch, ' ','gina'])
-
-"let g:airline#extensions#ale#enabled = 1
-"let g:airline#extensions#ale#error_symbol = 'E:'
-"
-"let g:airline#extensions#gina#enabled = 1
-"let g:airline#extensions#branch#enabled = 1
-
 let g:airline_stl_path_style = 'short'
+let g:airline#extensions#tabline#show_close_button = 0
+"let g:airline_statusline_ontop = 1
+"let g:airline_disable_statusline = 1
+"set showtabline=2
+set noshowmode
+set laststatus=0
+set noshowcmd
+set noruler
 
 "let g:airline#extensions#default#layout = [
 "      \ [ 'a', 'b', 'c' ],
@@ -299,7 +298,9 @@ command! -nargs=0 RRC
 " Custom Key Bindings
 " Additional escape sequences
 inoremap <a-[> <c-[>
+vnoremap <a-[> <c-[>
 tnoremap <a-[> <c-\><c-n>
+tnoremap <c-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
 
 " Buffer Navigation
@@ -375,7 +376,12 @@ set undofile
 set undodir=~/.cache/nvim/undo_history/
 
 colorscheme gruvbox
-hi FloatermBorder guibg=bg guifg=fg
+let g:gruvbox_transparent_bg = 1
+let g:gruvbox_italic = 1
+
+autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
+autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
+autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
 
 set signcolumn=yes
 set updatetime=750

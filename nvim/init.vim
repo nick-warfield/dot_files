@@ -41,6 +41,9 @@ Plug 'neovim/pynvim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'vim-airline/vim-airline'
+"Plug 'szw/vim-maximizer'
+"Plug 'vim-windowswap'
+"Plug 'lambdalisue/battery.vim'
 
 "Plug 'gcmt/taboo.vim'
 "Plug 'mhinz/vim-startify'
@@ -52,13 +55,15 @@ Plug 'airblade/vim-gitgutter'
 
 " Dev Tools
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'majutsushi/tagbar', { 'on': 'TagbarToggle' }
+"Plug 'lambdalisue/fern.vim'			" Nerdtree replacement
+Plug 'majutsushi/tagbar'
+"Plug 'liuchengxu/vista.vim'			" tagbar replacement
 Plug 'w0rp/ale'
+"Plug 'autozimu/LanguageClient-neovim'	" ale replacement
 "Plug 'puremourning/vimspector'
 
 " cpp enhancements
 Plug 'Chiel92/vim-autoformat'
-Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'ludovicchabant/vim-gutentags'
 
@@ -79,6 +84,7 @@ Plug 'junegunn/goyo.vim'
 "proselint (pip)
 
 " Language Support
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'xuhdev/vim-latex-live-preview'
 Plug 'plasticboy/vim-markdown'
 Plug 'keith/swift.vim'

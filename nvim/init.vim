@@ -62,93 +62,12 @@ Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 call plug#end()
 
 let g:python3_host_prog='/usr/bin/python'
-let gutentags_cache_dir='~/.cache/nvim/gutentags'
-
-" ncm2 config
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
-
-" ale config
-let g:ale_linters = { 'cpp': ['clang++'], 'c': ['clang'], }
-let g:ale_c_cc_executable = 'clang'
-let g:ale_cpp_cc_executable = 'clang++'
-let g:ale_c_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
-let g:ale_cpp_cc_options = '-std=c++17 -Wall -Wno-missing-braces -Iinclude -isystem lib'
-
-" fzf config
-let g:fzf_buffers_jump = 1
-let g:fzf_preview_window = 'right:70%'
-let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.7, 'yoffset': 0.2, 'border': 'right' } }
-
-function! s:find_home_files()
-	let l:bat_options = '--preview=bat --style=plain --color=always {}'
-	let l:fzf_options = [
-				\		'--border',
-				\		'--margin=0',
-				\		'--inline-info',
-				\		'--reverse',
-				\		'--tabstop=4',
-				\		'--black',
-				\		l:bat_options,
-				\		'--preview-window=right:70%' ]
-	call fzf#run(fzf#wrap({ 'source': 'ag -g '''' ~', 'options': fzf_options } ))
-endfunction
-
-function! s:find_local_files()
-	let l:bat_options = '--preview=bat --style=plain --color=always {}'
-	let l:fzf_options = [
-				\		'--border',
-				\		'--margin=0',
-				\		'--inline-info',
-				\		'--reverse',
-				\		'--tabstop=4',
-				\		'--black',
-				\		l:bat_options,
-				\		'--preview-window=right:70%' ]
-	call fzf#run(fzf#wrap({ 'source': 'ag --ignore lib -g '''' ./', 'options': fzf_options } ))
-endfunction
-
-command! -bang -nargs=* -complete=dir BTags
-			\ call fzf#vim#buffer_tags(
-			\	<q-args>,
-			\	{ 'options': [
-			\		'--border',
-			\		'--margin=0',
-			\		'--inline-info',
-			\		'--reverse',
-			\		'--tabstop=2',
-			\		'--black' ] },
-			\	<bang>0)
-
-command! -bang -nargs=* -complete=dir Lines
-			\ call fzf#vim#lines(
-			\	<q-args>,
-			\	{ 'options': [
-			\		'--reverse',
-			\		'--tabstop=2',
-			\		'--black' ] },
-			\	<bang>0)
-
 
 " Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
 autocmd BufNewFile,BufRead *.tpp set filetype=cpp
-autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,tpp'
+autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
-
-" Auto build and test
-autocmd BufWrite *.rs :AsyncRun cargo build
-autocmd BufWrite *.rs :AsyncRun cargo test
-autocmd BufWrite *.*pp :AsyncRun make
-autocmd BufWrite *.*pp :AsyncRun make test
-
-" Tagbar + Nerdtree Config
-let g:tagbar_autofocus = 1
-"let g:tagbar_wrap = 1
-let NERDTreeIgnore = ['\.class$']
 
 " Vimwiki Config
 let personal_wiki = {}
@@ -210,10 +129,6 @@ autocmd Filetype vim setlocal foldmethod=manual
 " Custom Commands
 command! -nargs=0 WW
 			\ Autoformat | w
-command! -bang -nargs=0 -complete=dir FindLocalFiles
-			\ call s:find_local_files()
-command! -bang -nargs=0 -complete=dir FindHomeFiles
-			\ call s:find_home_files()
 
 command! -nargs=0 T
 			\ set nonu | exe "te" | exe "startinsert"
@@ -237,19 +152,19 @@ command! -nargs=0 RRC
 
 " Custom Key Bindings
 " Additional escape sequences
-inoremap <a-[> <c-[>
-vnoremap <a-[> <c-[>
-tnoremap <a-[> <c-\><c-n>
 tnoremap <c-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
 
 " Buffer Navigation
 nnoremap <silent> <M-j> <c-d> M
 nnoremap <silent> <M-k> <c-u> M
-inoremap <silent> <M-j> <Esc><c-d> M
-inoremap <silent> <M-k> <Esc><c-u> M
+inoremap <silent> <M-j> <Esc><c-d> Mi
+inoremap <silent> <M-k> <Esc><c-u> Mi
 nnoremap ( zk
 nnoremap ) zj
+nnoremap <silent> j gj
+nnoremap <silent> k gk
+nnoremap <silent> <Space> za
 
 " Window Select
 nnoremap <silent> <S-M-J> :wincmd j<CR>
@@ -262,8 +177,8 @@ inoremap <silent> <S-M-L> <Esc>:w <bar> wincmd l<CR>
 inoremap <silent> <S-M-H> <Esc>:w <bar> wincmd h<CR>
 
 " Terminal Creation
-nnoremap <silent> t :FloatermToggle<CR>
-nnoremap <silent> T :T<CR>
+nnoremap <silent> <leader>t :FloatermToggle<CR>
+nnoremap <silent> <leader>T :T<CR>
 
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
@@ -273,30 +188,13 @@ inoremap <silent> <c-k> <Esc>:m .-2<CR>==gi
 vnoremap <silent> <c-j> :m '>+1<CR>gv=gv
 vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 
-" Searching
-nnoremap <c-o> :FindLocalFiles<CR>
-"nnoremap <c-s-o> :FindHomeFiles<Cr>	" these keybindings are conflicting
-nnoremap <c-f> :BTags<CR>
-nnoremap <c-t> <c-]>
-inoremap <c-t> <Esc><c-]>
-nnoremap // :Lines<CR>
-
 " Function Keys
 nnoremap <silent> <F1> :VimwikiIndex<cr>
-"F1-F3 reserved for groupware
 nnoremap <silent> <F4> :FloatermNew --autoinsert=true --height=0.95 --width=0.95 --wintype=float --autoclose=1 --title=lazygit lazygit<cr>
 
 nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
 nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=tests make test<cr>
 nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
-
-nnoremap <silent> <F11> :NERDTreeToggle<CR>
-nnoremap <silent> <F12> :TagbarToggle<CR>
-
-" Misc
-nnoremap <silent> <Space> za
-nnoremap <silent> j gj
-nnoremap <silent> k gk
 
 " Global Settings
 set termguicolors
@@ -326,7 +224,7 @@ autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
 set signcolumn=yes
 set updatetime=750
 highlight clear SignColumn
-let g:gitgutter_set_sign_backgrounds = 1
+let g:gitgutter_set_sign_backgrounds = 0
 
 let g:rust_recommended_style = 0
 let g:rust_fold = 1
@@ -334,7 +232,3 @@ let g:rust_fold = 1
 let g:livepreview_previewer = 'qpdfview'
 
 let g:vim_markdown_follow_anchor = 1
-
-let g:calendar_google_calendar = 1
-let g:calendar_google_task = 1
-

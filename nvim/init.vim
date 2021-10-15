@@ -1,3 +1,16 @@
+" TODO
+" vimwiki config
+" debugger config and keybinds
+" lspsaga config and keybinds
+" maximizer and windowswap keybinds
+" fern keybindings? not really sure if it's worth it
+" pretty status line
+"	- git	- current function	- colors
+" colorscheme: gotta keep background clear always
+" folds are way too slow
+" writing mode function
+" general keybinds
+
 " Plugins
 " Install vim-plug if not found
 if empty(glob('~/.vim/autoload/plug.vim'))
@@ -28,11 +41,11 @@ Plug 'airblade/vim-gitgutter'
 " Dev Tools
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
+Plug 'Chiel92/vim-autoformat'
 Plug 'mfussenegger/nvim-dap'		" Debugger
 Plug 'rcarriga/nvim-dap-ui'			" Debugger UI
 Plug 'glepnir/lspsaga.nvim'			" LSP UI
 "Plug 'lambdalisue/fern.vim'		" Tree viewer
-Plug 'Chiel92/vim-autoformat'
 
 " Autocomplete
 Plug 'hrsh7th/nvim-cmp'

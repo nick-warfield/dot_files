@@ -28,12 +28,17 @@ Plug 'airblade/vim-gitgutter'
 " Dev Tools
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
-"Plug 'mfussenegger/nvim-dap'
-"Plug 'ms-jpq/coq_nvim', {'branch': 'coq'}		" Autocomplete
-"Plug 'lambdalisue/fern.vim'					" Tree viewer
-"Plug 'glepnir/lspsaga.nvim'					" LSP UI
-"Plug 'rcarriga/nvim-dap-ui'					" Debugger UI
+"Plug 'mfussenegger/nvim-dap'		" Debugger
+"Plug 'lambdalisue/fern.vim'		" Tree viewer
+"Plug 'glepnir/lspsaga.nvim'		" LSP UI
+"Plug 'rcarriga/nvim-dap-ui'		" Debugger UI
 Plug 'Chiel92/vim-autoformat'
+
+" Autocomplete
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp'			" Source
+Plug 'hrsh7th/cmp-buffer'			" Source
+Plug 'hrsh7th/cmp-path'				" Source
 
 " Writing
 Plug 'vimwiki/vimwiki'
@@ -107,6 +112,7 @@ require'nvim-treesitter.configs'.setup {
   incremental_selection = {
     enable = true,
     keymaps = {
+	  -- these could be mapped better
       init_selection = "gnn",
       node_incremental = "grn",
       scope_incremental = "grc",
@@ -130,6 +136,51 @@ require'nvim-treesitter.configs'.setup {
 	  "zig",
   },
 }
+EOF
+
+" Autcomplete Config
+set completeopt=menu,menuone,noselect
+
+lua <<EOF
+  -- Setup nvim-cmp.
+  local cmp = require'cmp'
+
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        -- For `vsnip` user.
+        -- vim.fn["vsnip#anonymous"](args.body)
+
+        -- For `luasnip` user.
+        -- require('luasnip').lsp_expand(args.body)
+
+        -- For `ultisnips` user.
+        -- vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+
+      -- For vsnip user.
+      -- { name = 'vsnip' },
+
+      -- For luasnip user.
+      -- { name = 'luasnip' },
+
+      -- For ultisnips user.
+      -- { name = 'ultisnips' },
+
+      { name = 'buffer' },
+      { name = 'path' },
+    }
+  })
 EOF
 
 " Autoformat Config

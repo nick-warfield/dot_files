@@ -29,9 +29,9 @@ Plug 'airblade/vim-gitgutter'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
 "Plug 'mfussenegger/nvim-dap'		" Debugger
-"Plug 'lambdalisue/fern.vim'		" Tree viewer
-"Plug 'glepnir/lspsaga.nvim'		" LSP UI
 "Plug 'rcarriga/nvim-dap-ui'		" Debugger UI
+Plug 'glepnir/lspsaga.nvim'			" LSP UI
+"Plug 'lambdalisue/fern.vim'		" Tree viewer
 Plug 'Chiel92/vim-autoformat'
 
 " Autocomplete
@@ -39,6 +39,8 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'			" Source
 Plug 'hrsh7th/cmp-buffer'			" Source
 Plug 'hrsh7th/cmp-path'				" Source
+"Plug 'kdheepak/cmp-latex-symbols'	" Source
+"Plug 'octaltree/cmp-look'			" Source
 
 " Writing
 Plug 'vimwiki/vimwiki'

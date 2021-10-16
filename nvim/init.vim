@@ -1,6 +1,7 @@
 " TODO
-" vimwiki config
+" orgmode config
 " debugger config and keybinds
+"	debug mode function
 " lspsaga config and keybinds
 " maximizer and windowswap keybinds
 " fern keybindings? not really sure if it's worth it
@@ -49,14 +50,17 @@ Plug 'glepnir/lspsaga.nvim'			" LSP UI
 
 " Autocomplete
 Plug 'hrsh7th/nvim-cmp'
+Plug 'L3MON4D3/LuaSnip'
+Plug 'rafamadriz/friendly-snippets'
 Plug 'hrsh7th/cmp-nvim-lsp'			" Source
 Plug 'hrsh7th/cmp-buffer'			" Source
 Plug 'hrsh7th/cmp-path'				" Source
+Plug 'saadparwaiz1/cmp_luasnip'		" Source
 "Plug 'kdheepak/cmp-latex-symbols'	" Source
 "Plug 'octaltree/cmp-look'			" Source
 
 " Writing
-Plug 'vimwiki/vimwiki'
+Plug 'kristijanhusak/orgmode.nvim'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 "proselint (pip)
@@ -153,12 +157,19 @@ require'nvim-treesitter.configs'.setup {
 }
 EOF
 
-" Autcomplete Config
+" Autocomplete Config
 set completeopt=menu,menuone,noselect
 
 lua <<EOF
-  -- Setup nvim-cmp.
+  local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  end
+
   local cmp = require'cmp'
+  local luasnip = require("luasnip")
+
+  require("luasnip/loaders/from_vscode").lazy_load({})
 
   cmp.setup({
     snippet = {
@@ -167,7 +178,7 @@ lua <<EOF
         -- vim.fn["vsnip#anonymous"](args.body)
 
         -- For `luasnip` user.
-        -- require('luasnip').lsp_expand(args.body)
+        require('luasnip').lsp_expand(args.body)
 
         -- For `ultisnips` user.
         -- vim.fn["UltiSnips#Anon"](args.body)
@@ -178,7 +189,35 @@ lua <<EOF
       ['<C-f>'] = cmp.mapping.scroll_docs(4),
       ['<C-Space>'] = cmp.mapping.complete(),
       ['<C-e>'] = cmp.mapping.close(),
-      ['<CR>'] = cmp.mapping.confirm({ select = true }),
+	  ["<CR>"] = cmp.mapping(function(fallback)
+		  if cmp.visible() then
+			  cmp.confirm({ select = true })
+		  else
+			  fallback()
+		  end
+	  end, { "i", "s" }),
+
+	  ["<Tab>"] = cmp.mapping(function(fallback)
+		  if cmp.visible() then
+			cmp.select_next_item()
+		  elseif luasnip.expand_or_jumpable() then
+			luasnip.expand_or_jump()
+		  elseif has_words_before() then
+			cmp.complete()
+		  else
+			fallback()
+		  end
+	  end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
     },
     sources = {
       { name = 'nvim_lsp' },
@@ -187,13 +226,14 @@ lua <<EOF
       -- { name = 'vsnip' },
 
       -- For luasnip user.
-      -- { name = 'luasnip' },
+      { name = 'luasnip' },
 
       -- For ultisnips user.
       -- { name = 'ultisnips' },
 
       { name = 'buffer' },
       { name = 'path' },
+      { name = 'orgmode' },
     }
   })
 EOF
@@ -284,37 +324,13 @@ autocmd BufNewFile,BufRead *.tpp set filetype=cpp
 autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
 
-" auto set up new wikis/todos for projects
-" autodetect wikis made manually
-" Vimwiki Config
-let personal_wiki = {}
-let personal_wiki.path = '~/Documents/notes'
-let personal_wiki.path_html = '~/Documents/notes/html'
-let personal_wiki.syntax = 'markdown'
-let personal_wiki.ext = 'md'
-let personal_wiki.auto_export = 1
-
-let high_seas_wiki = {}
-let high_seas_wiki.path = '~/Documents/high_seas'
-let high_seas_wiki.path_html = '~/Documents/high_seas/html'
-"let high_seas_wiki.syntax = 'default'
-let high_seas_wiki.auto_export = 1
-
-let g:vimwiki_list = [personal_wiki, high_seas_wiki]
-
-" disable tab mappings so autocomplete works
-let g:vimwiki_key_mappings = {
-            \ 'all_maps': 1,
-            \ 'global': 1,
-            \ 'headers': 1,
-            \ 'text_objs': 1,
-            \ 'table_format': 1,
-            \ 'table_mappings': 0,
-            \ 'lists': 1,
-            \ 'links': 1,
-            \ 'html': 1,
-            \ 'mouse': 0,
-            \ }
+" Org Mode
+lua << EOF
+require('orgmode').setup({
+  org_agenda_files = {'~/Documents/org/*'},
+  org_default_notes_file = '~/Dropbox/org/notes.org',
+})
+EOF
 
 " Folds Config
 augroup remember_folds
@@ -443,9 +459,6 @@ set signcolumn=yes
 set updatetime=750
 highlight clear SignColumn
 let g:gitgutter_set_sign_backgrounds = 0
-
-"let g:rust_recommended_style = 0
-"let g:rust_fold = 1
 
 let g:livepreview_previewer = 'qpdfview'
 let g:vim_markdown_follow_anchor = 1

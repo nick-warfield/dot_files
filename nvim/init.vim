@@ -50,6 +50,7 @@ Plug 'glepnir/lspsaga.nvim'			" LSP UI
 
 " Autocomplete
 Plug 'hrsh7th/nvim-cmp'
+Plug 'windwp/nvim-autopairs'
 Plug 'L3MON4D3/LuaSnip'
 Plug 'rafamadriz/friendly-snippets'
 Plug 'hrsh7th/cmp-nvim-lsp'			" Source
@@ -170,6 +171,7 @@ lua <<EOF
   local luasnip = require("luasnip")
 
   require("luasnip/loaders/from_vscode").lazy_load({})
+  require('nvim-autopairs').setup{}
 
   cmp.setup({
     snippet = {

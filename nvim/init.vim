@@ -1,4 +1,6 @@
 " TODO
+" switch to all lua
+" 
 " orgmode config
 " debugger config and keybinds
 "	debug mode function
@@ -43,10 +45,12 @@ Plug 'airblade/vim-gitgutter'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
 Plug 'Chiel92/vim-autoformat'
-Plug 'mfussenegger/nvim-dap'		" Debugger
-Plug 'rcarriga/nvim-dap-ui'			" Debugger UI
-Plug 'glepnir/lspsaga.nvim'			" LSP UI
-"Plug 'lambdalisue/fern.vim'		" Tree viewer
+Plug 'mfussenegger/nvim-dap'			" Debugger
+Plug 'rcarriga/nvim-dap-ui'				" Debugger UI
+Plug 'glepnir/lspsaga.nvim'				" LSP UI
+"Plug 'lambdalisue/fern.vim'			" Tree viewer
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'	" Fuzzy finder
 
 " Autocomplete
 Plug 'hrsh7th/nvim-cmp'

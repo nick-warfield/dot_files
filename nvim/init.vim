@@ -94,7 +94,8 @@ Plug 'powerman/vim-plugin-AnsiEsc'
 
 call plug#end()
 
-let g:python3_host_prog='/usr/bin/python'
+let g:python_host_prog = '/usr/bin/python'
+let g:python3_host_prog = '/usr/bin/python3'
 let gutentags_cache_dir='~/.cache/nvim/gutentags'
 
 " airline config

@@ -71,7 +71,7 @@ schemes:
         cyan:    '0x427b58'
         white:   '0x3c3836'
 
-colors: *dark
+colors: *light
 
 background_opacity: 1.0
 

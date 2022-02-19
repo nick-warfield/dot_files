@@ -20,19 +20,15 @@ bspc config split_ratio 0.5
 bspc config remove_disabled_monitors true
 bspc config remove_unplugged_monitors true
 
-bspc monitor -d a b c d e
+bspc monitor DP-0 -d 1 2 3 4 5
+bspc monitor HDMI-0 -d 6 7 8 9 10
 
 # game projects
-bspc rule -a mars_mechs state=floating
-bspc rule -a natww state=floating
 bspc rule -a Vulkan state=floating
 bspc rule -a vulkanExample,* state=floating
 bspc rule -a Navigator, firefox state=floating
+bspc rule -a origin.exe state=floating
 
-wal -ni ~/Pictures/snowy_mountains.jpg -a "80" -b "#1F1D19"
+#wal -ni ~/Pictures/snowy_mountains.jpg -a "80" -b "#1F1D19"
 ~/.fehbg &
 ~/.config/bspwm/init.sh
-
-#xinput --set-prop 9 'libinput Accel Profile Enabled' 0, 1
-xset r rate 325 45
-xsetroot -cursor_name left_ptr

@@ -1,11 +1,28 @@
 font:
     size: 13.0
 
+    normal:
+      family: Monaco
+      style: Regular
+
+    bold:
+      family: Monaco
+      style: Bold
+
+    italic:
+      family: Monaco
+      style: Italic
+
+    bold_italic:
+      family: Monaco
+      style: Bold Italic
+
 window:
     padding:
         x: 40
         y: 30
     startup_mode: Maximized
+    opacity: 0.92
 
 mouse:
     hide_when_typing: true
@@ -71,9 +88,7 @@ schemes:
         cyan:    '0x427b58'
         white:   '0x3c3836'
 
-colors: *light
-
-background_opacity: 1.0
+colors: *dark
 
 key_bindings:
     - { key: F, mods: Control|Shift, action: ReceiveChar }

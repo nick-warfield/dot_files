@@ -1,20 +1,18 @@
-" TODO:
-"	- load large files faster
-"	- Fold by ctags?
-"	- vim-file fold pluging
-"
-"	- customize status bar
-"	- customize tab bar
-"	- clock
-"
-"	- clear background hilights in plugins
-"	- use custom signs in ALE, gitgutter, etc
-"
-"	- custom home page
-"	- better markdown highlighting and formating
-"	- plaintext file sync
-"	- email?
-"	- calendar?
+" TODO
+" switch to all lua
+" 
+" orgmode config
+" debugger config and keybinds
+"	debug mode function
+" lspsaga config and keybinds
+" maximizer and windowswap keybinds
+" fern keybindings? not really sure if it's worth it
+" pretty status line
+"	- git	- current function	- colors
+" colorscheme: gotta keep background clear always
+" folds are way too slow
+" writing mode function
+" general keybinds
 
 " Plugins
 " Install vim-plug if not found
@@ -33,219 +31,389 @@ call plug#begin('~/.config/nvim/plugged')
 "General Goodies
 Plug 'morhetz/gruvbox'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
 Plug 'gioele/vim-autoswap'
 Plug 'farmergreg/vim-lastplace'
-Plug 'skywind3000/asyncrun.vim'
 Plug 'voldikss/vim-floaterm'
-Plug 'neovim/pynvim'
-Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'vim-airline/vim-airline'
-" https://github.com/rbong/vim-crystalline		" airline replacement
-Plug 'lambdalisue/battery.vim'
-"Plug 'szw/vim-maximizer'
+Plug 'szw/vim-maximizer'
 "Plug 'vim-windowswap'
-
-"Plug 'gcmt/taboo.vim'
-"Plug 'mhinz/vim-startify'
-"Plug 'skywind3000/vim-quickui'
-
-" Git Integration
-Plug 'lambdalisue/gina.vim'
+Plug 'derekwyatt/vim-fswitch'
 Plug 'airblade/vim-gitgutter'
+"Plug 'rbong/vim-crystalline'		" airline replacement
 
 " Dev Tools
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-"Plug 'lambdalisue/fern.vim'			" Nerdtree replacement
-Plug 'majutsushi/tagbar'
-"Plug 'liuchengxu/vista.vim'			" tagbar replacement
-Plug 'w0rp/ale'
-"Plug 'autozimu/LanguageClient-neovim'	" ale replacement
-"Plug 'puremourning/vimspector'
-
-" cpp enhancements
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate'}
 Plug 'Chiel92/vim-autoformat'
-Plug 'derekwyatt/vim-fswitch'
-Plug 'ludovicchabant/vim-gutentags'
+Plug 'mfussenegger/nvim-dap'			" Debugger
+Plug 'rcarriga/nvim-dap-ui'				" Debugger UI
+Plug 'glepnir/lspsaga.nvim'				" LSP UI
+"Plug 'lambdalisue/fern.vim'			" Tree viewer
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'	" Fuzzy finder
+Plug 'nvim-telescope/telescope-fzf-native.nvim', {'do': 'make'}
+Plug 'APZelos/blamer.nvim'
 
-" Autocompletion
-Plug 'ncm2/ncm2'
-Plug 'roxma/nvim-yarp'
-Plug 'ncm2/ncm2-bufword'
-Plug 'ncm2/ncm2-path'
-Plug 'ncm2/ncm2-pyclang'
-
-" Groupware
-Plug 'vimwiki/vimwiki'
-Plug 'itchyny/calendar.vim'
-Plug 'enricobacis/vim-airline-clock'
+" Autocomplete
+Plug 'hrsh7th/nvim-cmp'
+Plug 'windwp/nvim-autopairs'
+Plug 'L3MON4D3/LuaSnip'
+Plug 'rafamadriz/friendly-snippets'
+Plug 'hrsh7th/cmp-nvim-lsp'			" Source
+Plug 'hrsh7th/cmp-buffer'			" Source
+Plug 'hrsh7th/cmp-path'				" Source
+Plug 'saadparwaiz1/cmp_luasnip'		" Source
+"Plug 'kdheepak/cmp-latex-symbols'	" Source
+"Plug 'octaltree/cmp-look'			" Source
 
 " Writing
-Plug 'junegunn/goyo.vim'
+Plug 'nvim-neorg/neorg'
+Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
+Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 "proselint (pip)
-
-" Language Support
-Plug 'octol/vim-cpp-enhanced-highlight'
-Plug 'xuhdev/vim-latex-live-preview'
-Plug 'plasticboy/vim-markdown'
-Plug 'keith/swift.vim'
-Plug 'mlr-msft/vim-loves-dafny'
-Plug 'powerman/vim-plugin-AnsiEsc'
 
 call plug#end()
 
-let g:python_host_prog = '/usr/bin/python'
-let g:python3_host_prog = '/usr/bin/python3'
-let gutentags_cache_dir='~/.cache/nvim/gutentags'
+" LSP Setup
+lua << EOF
+local nvim_lsp = require('lspconfig')
 
-" airline config
-let g:airline_extensions = [ 'branch', 'asyncrun', 'battery', 'clock' ]
-let g:airline#extensions#tagbar#flags = 's'
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-let g:airline#extensions#tabline#formatter = 'unique_tail'
-let g:airline_stl_path_style = 'short'
-let g:airline#extensions#tabline#show_close_button = 0
-"let g:airline_statusline_ontop = 1
-"let g:airline_disable_statusline = 1
-"set showtabline=2
-set noshowmode
-set laststatus=0
-set noshowcmd
-set noruler
+  -- Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-"let g:airline#extensions#default#layout = [
-"      \ [ 'a', 'b', 'c' ],
-"      \ [ 'x', 'y', 'z', 'error', 'warning' ]
-"      \ ]
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
 
-"let g:asyncrun_status = "asyncrun"
-"let g:airline_section_error =
-"			\ airline#section#create_right(['%{g:asyncrun_status}'])
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap('n', '<space>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 
-" taboo config
+end
 
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { 'sorbet', 'texlab', 'pyright', 'rust_analyzer', 'clangd', 'bashls', 'html', 'jsonls', 'yamlls', 'vimls', 'zls' }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup {
+    on_attach = on_attach,
+    flags = {
+      debounce_text_changes = 150,
+    }
+  }
+end
+EOF
 
-" ncm2 config
-autocmd BufEnter * call ncm2#enable_for_buffer()
-set completeopt=noinsert,menuone,noselect
-inoremap <expr><tab> pumvisible() ? "\<c-n>" : "\<tab>"
-inoremap <expr><s-tab> pumvisible() ? "\<c-p>" : "\<s-tab>"
-inoremap <expr> <CR> (pumvisible() ? "\<c-y>\<cr>" : "\<CR>")
+" Treesitter config
+lua <<EOF
+require'nvim-treesitter.configs'.setup {
+  highlight = {
+    enable = true,
+    -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
+    -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
+    -- Using this option may slow down your editor, and you may see some duplicate highlights.
+    -- Instead of true it can also be a list of languages
+    additional_vim_regex_highlighting = false,
+  },
+  incremental_selection = {
+    enable = true,
+    keymaps = {
+	  -- these could be mapped better
+      init_selection = "gnn",
+      node_incremental = "grn",
+      scope_incremental = "grc",
+      node_decremental = "grm",
+    },
+  },
+  ensure_installed = {
+	  "bash",
+	  "c",
+	  "cmake",
+	  "cpp",
+	  "html",
+	  "json",
+	  "latex",
+	  "lua",
+	  "python",
+	  "rust",
+	  "toml",
+	  "vim",
+	  "yaml",
+	  "zig",
+  },
+}
+EOF
 
-" ale config
-let g:ale_linters = { 'cpp': ['clang++'], 'c': ['clang'], }
-let g:ale_c_cc_executable = 'clang'
-let g:ale_cpp_cc_executable = 'clang++'
-let g:ale_c_cc_options = '-std=c++17 -Wall -Iinclude -isystem lib'
-let g:ale_cpp_cc_options = '-std=c++17 -Wall -Wno-missing-braces -Iinclude -isystem lib'
+" Autocomplete Config
+set completeopt=menu,menuone,noselect
 
-" fzf config
-let g:fzf_buffers_jump = 1
-let g:fzf_preview_window = 'right:70%'
-let g:fzf_layout = { 'window': { 'width': 0.95, 'height': 0.7, 'yoffset': 0.2, 'border': 'right' } }
+lua <<EOF
+  local has_words_before = function()
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  end
 
-function! s:find_home_files()
-	let l:bat_options = '--preview=bat --style=plain --color=always {}'
-	let l:fzf_options = [
-				\		'--border',
-				\		'--margin=0',
-				\		'--inline-info',
-				\		'--reverse',
-				\		'--tabstop=4',
-				\		'--black',
-				\		l:bat_options,
-				\		'--preview-window=right:70%' ]
-	call fzf#run(fzf#wrap({ 'source': 'ag -g '''' ~', 'options': fzf_options } ))
-endfunction
+  local cmp = require'cmp'
+  local luasnip = require("luasnip")
 
-function! s:find_local_files()
-	let l:bat_options = '--preview=bat --style=plain --color=always {}'
-	let l:fzf_options = [
-				\		'--border',
-				\		'--margin=0',
-				\		'--inline-info',
-				\		'--reverse',
-				\		'--tabstop=4',
-				\		'--black',
-				\		l:bat_options,
-				\		'--preview-window=right:70%' ]
-	call fzf#run(fzf#wrap({ 'source': 'ag --ignore lib -g '''' ./', 'options': fzf_options } ))
-endfunction
+  require("luasnip/loaders/from_vscode").lazy_load({})
+  require('nvim-autopairs').setup{}
 
-command! -bang -nargs=* -complete=dir BTags
-			\ call fzf#vim#buffer_tags(
-			\	<q-args>,
-			\	{ 'options': [
-			\		'--border',
-			\		'--margin=0',
-			\		'--inline-info',
-			\		'--reverse',
-			\		'--tabstop=2',
-			\		'--black' ] },
-			\	<bang>0)
+  cmp.setup({
+    snippet = {
+      expand = function(args)
+        -- For `vsnip` user.
+        -- vim.fn["vsnip#anonymous"](args.body)
 
-command! -bang -nargs=* -complete=dir Lines
-			\ call fzf#vim#lines(
-			\	<q-args>,
-			\	{ 'options': [
-			\		'--reverse',
-			\		'--tabstop=2',
-			\		'--black' ] },
-			\	<bang>0)
+        -- For `luasnip` user.
+        require('luasnip').lsp_expand(args.body)
 
+        -- For `ultisnips` user.
+        -- vim.fn["UltiSnips#Anon"](args.body)
+      end,
+    },
+    mapping = {
+      ['<C-d>'] = cmp.mapping.scroll_docs(-4),
+      ['<C-f>'] = cmp.mapping.scroll_docs(4),
+      ['<C-Space>'] = cmp.mapping.complete(),
+      ['<C-e>'] = cmp.mapping.close(),
+	  ["<CR>"] = cmp.mapping(function(fallback)
+		  if cmp.visible() then
+			  cmp.confirm({ select = true })
+		  else
+			  fallback()
+		  end
+	  end, { "i", "s" }),
+
+	  ["<Tab>"] = cmp.mapping(function(fallback)
+		  if cmp.visible() then
+			cmp.select_next_item()
+		  elseif luasnip.expand_or_jumpable() then
+			luasnip.expand_or_jump()
+		  elseif has_words_before() then
+			cmp.complete()
+		  else
+			fallback()
+		  end
+	  end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    },
+    sources = {
+      { name = 'nvim_lsp' },
+
+      -- For vsnip user.
+      -- { name = 'vsnip' },
+
+      -- For luasnip user.
+      { name = 'luasnip' },
+
+      -- For ultisnips user.
+      -- { name = 'ultisnips' },
+
+      { name = 'buffer' },
+      { name = 'path' },
+      { name = 'orgmode' },
+    }
+  })
+EOF
+
+lua <<EOF
+
+require('telescope').setup {
+	extensions = {
+		fzf = {
+			fuzzy = true,
+			override_generic_sorter = true,
+			override_file_sorter = true,
+			case_mode = "smart_case",
+		}
+	}
+}
+
+require('telescope').load_extension('fzf')
+
+EOF
+
+" Debugger Config
+lua <<EOF
+local dap = require('dap')
+dap.adapters.lldb = {
+  type = 'executable',
+  command = '/usr/bin/lldb-vscode', -- adjust as needed
+  name = "lldb"
+}
+
+dap.configurations.cpp = {
+  {
+    name = "Launch",
+    type = "lldb",
+    request = "launch",
+    program = function()
+      return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+    end,
+    cwd = '${workspaceFolder}',
+    stopOnEntry = false,
+    args = {},
+
+    -- if you change `runInTerminal` to true, you might need to change the yama/ptrace_scope setting:
+    --
+    --    echo 0 | sudo tee /proc/sys/kernel/yama/ptrace_scope
+    --
+    -- Otherwise you might get the following error:
+    --
+    --    Error on launch: Failed to attach to the target process
+    --
+    -- But you should be aware of the implications:
+    -- https://www.kernel.org/doc/html/latest/admin-guide/LSM/Yama.html
+    runInTerminal = false,
+  },
+}
+-- If you want to use this for rust and c, add something like this:
+
+dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
+
+require("dapui").setup({
+  icons = { expanded = "▾", collapsed = "▸" },
+  mappings = {
+    -- Use a table to apply multiple mappings
+    expand = { "<CR>", "<2-LeftMouse>" },
+    open = "o",
+    remove = "d",
+    edit = "e",
+    repl = "r",
+  },
+  sidebar = {
+    -- You can change the order of elements in the sidebar
+    elements = {
+      -- Provide as ID strings or tables with "id" and "size" keys
+      {
+        id = "scopes",
+        size = 0.25, -- Can be float or integer > 1
+      },
+      { id = "breakpoints", size = 0.25 },
+      { id = "stacks", size = 0.25 },
+      { id = "watches", size = 00.25 },
+    },
+    size = 40,
+    position = "left", -- Can be "left", "right", "top", "bottom"
+  },
+  tray = {
+    elements = { "repl" },
+    size = 10,
+    position = "bottom", -- Can be "left", "right", "top", "bottom"
+  },
+  floating = {
+    max_height = nil, -- These can be integers or a float between 0 and 1.
+    max_width = nil, -- Floats will be treated as percentage of your screen.
+    mappings = {
+      close = { "q", "<Esc>" },
+    },
+  },
+  windows = { indent = 1 },
+})
+EOF
 
 " Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
 autocmd BufNewFile,BufRead *.tpp set filetype=cpp
-autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,tpp'
+autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
 
-" Auto build and test
-autocmd BufWrite *.rs :AsyncRun cargo build
-autocmd BufWrite *.rs :AsyncRun cargo test
-autocmd BufWrite *.*pp :AsyncRun make
-autocmd BufWrite *.*pp :AsyncRun make test
+" Neorg setup
+lua << EOF
+    require('neorg').setup {
+        -- Tell Neorg what modules to load
+        load = {
+            ["core.defaults"] = {}, -- Load all the default modules
+			["core.norg.qol.toc"] = {}, -- table of contents
+			["core.integrations.nvim-cmp"] = {},
+			["core.norg.journal"] = {},
+            ["core.norg.concealer"] = { -- Allows for use of icons
+				config = {
+					icon_preset = "basic",
+				}
+			},
+            ["core.norg.dirman"] = { -- Manage your directories with Neorg
+                config = {
+                    workspaces = {
+                        my_workspace = "~/neorg",
+						campagin = "~/Documents/campagins"
+                    }
+                }
+            }
+        },
+    }
 
-" Tagbar + Nerdtree Config
-let g:tagbar_autofocus = 1
-"let g:tagbar_wrap = 1
-let NERDTreeIgnore = ['\.class$']
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
 
-" Vimwiki Config
-let personal_wiki = {}
-let personal_wiki.path = '~/Documents/notes'
-let personal_wiki.path_html = '~/Documents/notes/html'
-let personal_wiki.syntax = 'markdown'
-let personal_wiki.ext = 'md'
-let personal_wiki.auto_export = 1
+parser_configs.norg = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg",
+        files = { "src/parser.c", 'src/scanner.cc' },
+        branch = "main"
+    },
+}
 
-let high_seas_wiki = {}
-let high_seas_wiki.path = '~/Documents/high_seas'
-let high_seas_wiki.path_html = '~/Documents/high_seas/html'
-"let high_seas_wiki.syntax = 'default'
-let high_seas_wiki.auto_export = 1
+parser_configs.norg_meta = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg-meta",
+        files = { "src/parser.c" },
+        branch = "main"
+    },
+}
 
-let g:vimwiki_list = [personal_wiki, high_seas_wiki]
+parser_configs.norg_table = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg-table",
+        files = { "src/parser.c" },
+        branch = "main"
+    },
+}
 
-" disable tab mappings so autocomplete works
-let g:vimwiki_key_mappings = {
-            \ 'all_maps': 1,
-            \ 'global': 1,
-            \ 'headers': 1,
-            \ 'text_objs': 1,
-            \ 'table_format': 1,
-            \ 'table_mappings': 0,
-            \ 'lists': 1,
-            \ 'links': 1,
-            \ 'html': 1,
-            \ 'mouse': 0,
-            \ }
+require('nvim-treesitter.configs').setup {
+    ensure_installed = { "norg", "norg_meta", "norg_table", "cpp", "c" },
+    highlight = { -- Be sure to enable highlights if you haven't!
+        enable = true,
+    }
+}
+
+EOF
 
 " Folds Config
 augroup remember_folds
   autocmd!
-  autocmd BufWinLeave *.vim mkview
-  autocmd BufWinEnter *.vim silent! loadview
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent! loadview
 augroup END
 
 function! NeatFoldText()
@@ -262,32 +430,28 @@ endfunction
 " Fold Text
 set foldtext=NeatFoldText()
 set fillchars=fold:\ "Comment for single space
-highlight Folded cterm=italic ctermbg=None ctermfg=Yellow
+highlight Folded cterm=italic guibg=None ctermbg=None ctermfg=Yellow
 
 " Fold Methods
-set foldmethod=syntax
-autocmd Filetype vim setlocal foldmethod=manual
+set foldmethod=expr
+set foldexpr=nvim_treesitter#foldexpr()
 
 " Custom Commands
 command! -nargs=0 WW
 			\ Autoformat | w
-command! -bang -nargs=0 -complete=dir FindLocalFiles
-			\ call s:find_local_files()
-command! -bang -nargs=0 -complete=dir FindHomeFiles
-			\ call s:find_home_files()
 
 command! -nargs=0 T
-			\ set nonu | exe "te" | exe "startinsert"
+			\ set nonu | set signcolumn=no | exe "te" | exe "startinsert"
 command! -nargs=0 TLeft
-			\ vs | set nonu | exe "te" | exe "startinsert"
+			\ vs | exe "T"
 command! -nargs=0 TRight
-			\ vs | exe "normal! <C-w>l" | set nonu | exe "te" | exe "startinsert"
+			\ vs | exe "normal! <C-w>l" | exe "T"
 command! -nargs=0 TUp
-			\ split | set nonu | exe "te" | exe "startinsert"
+			\ sp | exe "T"
 command! -nargs=0 TDown
-			\ split | exe "normal! <C-w>j" | set nonu | exe "te" | exe "startinsert"
+			\ sp | exe "normal! <C-w>j" | exe "T"
 command! -nargs=0 TTab
-			\ tabe | set nonu | exe "te" | exe "startinsert"
+			\ tabe | exe "T"
 
 command! -nargs=0 FS FSHere
 
@@ -298,33 +462,48 @@ command! -nargs=0 RRC
 
 " Custom Key Bindings
 " Additional escape sequences
-inoremap <a-[> <c-[>
-vnoremap <a-[> <c-[>
-tnoremap <a-[> <c-\><c-n>
 tnoremap <c-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
 
 " Buffer Navigation
 nnoremap <silent> <M-j> <c-d> M
 nnoremap <silent> <M-k> <c-u> M
-inoremap <silent> <M-j> <Esc><c-d> M
-inoremap <silent> <M-k> <Esc><c-u> M
+inoremap <silent> <M-j> <Esc><c-d> Mi
+inoremap <silent> <M-k> <Esc><c-u> Mi
 nnoremap ( zk
 nnoremap ) zj
+nnoremap <silent> j gj
+nnoremap <silent> k gk
+nnoremap <silent> <Space> za
 
 " Window Select
-nnoremap <silent> <S-M-J> :wincmd j<CR>
-nnoremap <silent> <S-M-K> :wincmd k<CR>
-nnoremap <silent> <S-M-L> :wincmd l<CR>
-nnoremap <silent> <S-M-H> :wincmd h<CR>
-inoremap <silent> <S-M-J> <Esc>:w <bar> wincmd j<CR>
-inoremap <silent> <S-M-K> <Esc>:w <bar> wincmd k<CR>
-inoremap <silent> <S-M-L> <Esc>:w <bar> wincmd l<CR>
-inoremap <silent> <S-M-H> <Esc>:w <bar> wincmd h<CR>
+noremap  <silent> <S-M-J> <Cmd>wincmd j<CR>
+noremap  <silent> <S-M-K> <Cmd>wincmd k<CR>
+noremap  <silent> <S-M-L> <Cmd>wincmd l<CR>
+noremap  <silent> <S-M-H> <Cmd>wincmd h<CR>
+
+inoremap <silent> <S-M-J> <Cmd>wincmd j<CR><Esc>
+inoremap <silent> <S-M-K> <Cmd>wincmd k<CR><Esc>
+inoremap <silent> <S-M-L> <Cmd>wincmd l<CR><Esc>
+inoremap <silent> <S-M-H> <Cmd>wincmd h<CR><Esc>
+
+tnoremap <silent> <S-M-J> <Cmd>wincmd j<CR>
+tnoremap <silent> <S-M-K> <Cmd>wincmd k<CR>
+tnoremap <silent> <S-M-L> <Cmd>wincmd l<CR>
+tnoremap <silent> <S-M-H> <Cmd>wincmd h<CR>
+
+noremap  <silent> <S-M-M> <Cmd>MaximizerToggle<CR>
+inoremap <silent> <S-M-M> <Cmd>MaximizerToggle<CR>
+tnoremap <silent> <S-M-M> <C-\><C-n><Cmd>MaximizerToggle<CR>i
 
 " Terminal Creation
-nnoremap <silent> t :FloatermToggle<CR>
-nnoremap <silent> T :T<CR>
+noremap  <silent> <leader>t <Cmd>FloatermToggle default<CR>
+inoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
+tnoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
+
+noremap  <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
+inoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
+tnoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
 
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
@@ -334,30 +513,14 @@ inoremap <silent> <c-k> <Esc>:m .-2<CR>==gi
 vnoremap <silent> <c-j> :m '>+1<CR>gv=gv
 vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 
-" Searching
-nnoremap <c-o> :FindLocalFiles<CR>
-"nnoremap <c-s-o> :FindHomeFiles<Cr>	" these keybindings are conflicting
-nnoremap <c-f> :BTags<CR>
-nnoremap <c-t> <c-]>
-inoremap <c-t> <Esc><c-]>
-nnoremap // :Lines<CR>
-
 " Function Keys
 nnoremap <silent> <F1> :VimwikiIndex<cr>
-"F1-F3 reserved for groupware
 nnoremap <silent> <F4> :FloatermNew --autoinsert=true --height=0.95 --width=0.95 --wintype=float --autoclose=1 --title=lazygit lazygit<cr>
 
 nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
 nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=tests make test<cr>
 nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
-
-nnoremap <silent> <F11> :NERDTreeToggle<CR>
-nnoremap <silent> <F12> :TagbarToggle<CR>
-
-" Misc
-nnoremap <silent> <Space> za
-nnoremap <silent> j gj
-nnoremap <silent> k gk
+nnoremap <silent> <F8> <CMD>lua require("dapui").toggle()<CR>
 
 " Global Settings
 set termguicolors
@@ -375,27 +538,30 @@ set autoread
 set mouse=a
 set undofile
 set undodir=~/.cache/nvim/undo_history/
+set bg=dark
+set linebreak
+
+if has('nvim')
+	let $GIT_EDITOR = 'nvr -cc split --remote-wait'
+endif
+autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
 colorscheme gruvbox
 let g:gruvbox_transparent_bg = 1
 let g:gruvbox_italic = 1
+hi Normal guibg=NONE ctermbg=NONE
 
 autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
 autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
 autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
+autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
 
 set signcolumn=yes
 set updatetime=750
 highlight clear SignColumn
-let g:gitgutter_set_sign_backgrounds = 1
-
-let g:rust_recommended_style = 0
-let g:rust_fold = 1
+let g:gitgutter_set_sign_backgrounds = 0
 
 let g:livepreview_previewer = 'qpdfview'
-
 let g:vim_markdown_follow_anchor = 1
-
-let g:calendar_google_calendar = 1
-let g:calendar_google_task = 1
+let g:python3_host_prog='/usr/bin/python'
 

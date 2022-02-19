@@ -27,16 +27,16 @@ super + shift + q
 
 # cycle desktops
 super + Tab
-	bspc desktop -f next
+	bspc desktop -f next.local
 super + shift + Tab
-	bspc desktop -f prev
+	bspc desktop -f prev.local
 
 # switch desktops
 super + {1-9,0}
-	bspc desktop -f ^{1-9,10}
+	bspc desktop -f {1-9,10}
 # move window to desktop
 super + shift + {1-9,0}
-	bspc node -d ^{1-9,10}
+	bspc node -d {1-9,10}
 
 # toggle fullscreen/floating
 super + f
@@ -54,13 +54,19 @@ super + b
 	bspc node -E
 
 super + space
-	bspc node -C forward
+	bspc node @/ -C forward
 super + shift + space
-	bspc node -C backward
+	bspc node @/ -C backward
 
 # switch/move window
 super + {_,shift +}{h,j,k,l}
 	bspc node -{f,s} {west,south,north,east}
+
+# Expand/contract a window by moving one of its side outward/inward
+super + ctrl + {h,j,k,l}
+    STEP=100; SELECTION={1,2,3,4}; \
+    bspc node -z $(echo "left -$STEP 0,bottom 0 $STEP,top 0 -$STEP,right $STEP 0" | cut -d',' -f$SELECTION) || \
+    bspc node -z $(echo "right -$STEP 0,top 0 $STEP,bottom 0 -$STEP,left $STEP 0" | cut -d',' -f$SELECTION)
 
 # volume hotkeys
 {XF86AudioLowerVolume}

@@ -1,0 +1,16 @@
+[user]
+	name = Nick Warfield
+	email = nick@nkwarfield.io
+
+[core]
+	editor = nvim
+
+[diff]
+    tool = nvimdiff
+[difftool "nvr"]
+    cmd = nvr -s -d $LOCAL $REMOTE
+
+[merge]
+    tool = nvimdiff
+[mergetool "nvr"]
+    cmd = nvr -s -d $LOCAL $BASE $REMOTE $MERGED -c 'wincmd J | wincmd ='

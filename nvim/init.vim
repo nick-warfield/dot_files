@@ -35,7 +35,7 @@ Plug 'tpope/vim-repeat'
 Plug 'gioele/vim-autoswap'
 Plug 'farmergreg/vim-lastplace'
 Plug 'voldikss/vim-floaterm'
-"Plug 'szw/vim-maximizer'
+Plug 'szw/vim-maximizer'
 "Plug 'vim-windowswap'
 Plug 'derekwyatt/vim-fswitch'
 Plug 'airblade/vim-gitgutter'
@@ -43,7 +43,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Dev Tools
 Plug 'neovim/nvim-lspconfig'
-Plug 'nvim-treesitter/nvim-treesitter', { 'branch': '0.5-compat', 'do': ':TSUpdate'}
+Plug 'nvim-treesitter/nvim-treesitter', { 'do': ':TSUpdate'}
 Plug 'Chiel92/vim-autoformat'
 Plug 'mfussenegger/nvim-dap'			" Debugger
 Plug 'rcarriga/nvim-dap-ui'				" Debugger UI
@@ -51,6 +51,8 @@ Plug 'glepnir/lspsaga.nvim'				" LSP UI
 "Plug 'lambdalisue/fern.vim'			" Tree viewer
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'	" Fuzzy finder
+Plug 'nvim-telescope/telescope-fzf-native.nvim', {'do': 'make'}
+Plug 'APZelos/blamer.nvim'
 
 " Autocomplete
 Plug 'hrsh7th/nvim-cmp'
@@ -65,7 +67,7 @@ Plug 'saadparwaiz1/cmp_luasnip'		" Source
 "Plug 'octaltree/cmp-look'			" Source
 
 " Writing
-Plug 'kristijanhusak/orgmode.nvim'
+Plug 'nvim-neorg/neorg'
 Plug 'junegunn/goyo.vim', { 'on': 'Goyo' }
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 "proselint (pip)
@@ -244,6 +246,23 @@ lua <<EOF
   })
 EOF
 
+lua <<EOF
+
+require('telescope').setup {
+	extensions = {
+		fzf = {
+			fuzzy = true,
+			override_generic_sorter = true,
+			override_file_sorter = true,
+			case_mode = "smart_case",
+		}
+	}
+}
+
+require('telescope').load_extension('fzf')
+
+EOF
+
 " Debugger Config
 lua <<EOF
 local dap = require('dap')
@@ -330,19 +349,71 @@ autocmd BufNewFile,BufRead *.tpp set filetype=cpp
 autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
 autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../include'
 
-" Org Mode
+" Neorg setup
 lua << EOF
-require('orgmode').setup({
-  org_agenda_files = {'~/Documents/org/*'},
-  org_default_notes_file = '~/Dropbox/org/notes.org',
-})
+    require('neorg').setup {
+        -- Tell Neorg what modules to load
+        load = {
+            ["core.defaults"] = {}, -- Load all the default modules
+			["core.norg.qol.toc"] = {}, -- table of contents
+			["core.integrations.nvim-cmp"] = {},
+			["core.norg.journal"] = {},
+            ["core.norg.concealer"] = { -- Allows for use of icons
+				config = {
+					icon_preset = "basic",
+				}
+			},
+            ["core.norg.dirman"] = { -- Manage your directories with Neorg
+                config = {
+                    workspaces = {
+                        my_workspace = "~/neorg",
+						campagin = "~/Documents/campagins"
+                    }
+                }
+            }
+        },
+    }
+
+local parser_configs = require('nvim-treesitter.parsers').get_parser_configs()
+
+parser_configs.norg = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg",
+        files = { "src/parser.c", 'src/scanner.cc' },
+        branch = "main"
+    },
+}
+
+parser_configs.norg_meta = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg-meta",
+        files = { "src/parser.c" },
+        branch = "main"
+    },
+}
+
+parser_configs.norg_table = {
+    install_info = {
+        url = "https://github.com/nvim-neorg/tree-sitter-norg-table",
+        files = { "src/parser.c" },
+        branch = "main"
+    },
+}
+
+require('nvim-treesitter.configs').setup {
+    ensure_installed = { "norg", "norg_meta", "norg_table", "cpp", "c" },
+    highlight = { -- Be sure to enable highlights if you haven't!
+        enable = true,
+    }
+}
+
 EOF
 
 " Folds Config
 augroup remember_folds
   autocmd!
-  autocmd BufWinLeave *.vim mkview
-  autocmd BufWinEnter *.vim silent! loadview
+  autocmd BufWinLeave * mkview
+  autocmd BufWinEnter * silent! loadview
 augroup END
 
 function! NeatFoldText()
@@ -406,18 +477,33 @@ nnoremap <silent> k gk
 nnoremap <silent> <Space> za
 
 " Window Select
-nnoremap <silent> <S-M-J> :wincmd j<CR>
-nnoremap <silent> <S-M-K> :wincmd k<CR>
-nnoremap <silent> <S-M-L> :wincmd l<CR>
-nnoremap <silent> <S-M-H> :wincmd h<CR>
-inoremap <silent> <S-M-J> <Esc>:w <bar> wincmd j<CR>
-inoremap <silent> <S-M-K> <Esc>:w <bar> wincmd k<CR>
-inoremap <silent> <S-M-L> <Esc>:w <bar> wincmd l<CR>
-inoremap <silent> <S-M-H> <Esc>:w <bar> wincmd h<CR>
+noremap  <silent> <S-M-J> <Cmd>wincmd j<CR>
+noremap  <silent> <S-M-K> <Cmd>wincmd k<CR>
+noremap  <silent> <S-M-L> <Cmd>wincmd l<CR>
+noremap  <silent> <S-M-H> <Cmd>wincmd h<CR>
+
+inoremap <silent> <S-M-J> <Cmd>wincmd j<CR><Esc>
+inoremap <silent> <S-M-K> <Cmd>wincmd k<CR><Esc>
+inoremap <silent> <S-M-L> <Cmd>wincmd l<CR><Esc>
+inoremap <silent> <S-M-H> <Cmd>wincmd h<CR><Esc>
+
+tnoremap <silent> <S-M-J> <Cmd>wincmd j<CR>
+tnoremap <silent> <S-M-K> <Cmd>wincmd k<CR>
+tnoremap <silent> <S-M-L> <Cmd>wincmd l<CR>
+tnoremap <silent> <S-M-H> <Cmd>wincmd h<CR>
+
+noremap  <silent> <S-M-M> <Cmd>MaximizerToggle<CR>
+inoremap <silent> <S-M-M> <Cmd>MaximizerToggle<CR>
+tnoremap <silent> <S-M-M> <C-\><C-n><Cmd>MaximizerToggle<CR>i
 
 " Terminal Creation
-nnoremap <silent> <leader>t :FloatermToggle<CR>
-nnoremap <silent> <leader>T :T<CR>
+noremap  <silent> <leader>t <Cmd>FloatermToggle default<CR>
+inoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
+tnoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
+
+noremap  <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
+inoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
+tnoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
 
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
@@ -452,14 +538,23 @@ set autoread
 set mouse=a
 set undofile
 set undodir=~/.cache/nvim/undo_history/
+set bg=dark
+set linebreak
+
+if has('nvim')
+	let $GIT_EDITOR = 'nvr -cc split --remote-wait'
+endif
+autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
 colorscheme gruvbox
 let g:gruvbox_transparent_bg = 1
 let g:gruvbox_italic = 1
+hi Normal guibg=NONE ctermbg=NONE
 
 autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
 autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
 autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
+autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
 
 set signcolumn=yes
 set updatetime=750

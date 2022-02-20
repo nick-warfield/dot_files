@@ -41,6 +41,7 @@ require('packer').startup(function(use)
 	use 'hrsh7th/cmp-nvim-lsp'       -- Source
 	use 'hrsh7th/cmp-buffer'         -- Source
 	use 'hrsh7th/cmp-path'           -- Source
+	use 'hrsh7th/cmp-cmdline'        -- Source
 	use 'saadparwaiz1/cmp_luasnip'   -- Source
 	--use 'kdheepak/cmp-latex-symbols' -- Source
 	--use 'octaltree/cmp-look'         -- Source
@@ -215,9 +216,9 @@ cmp.setup({
 	sources = {
 		{ name = 'nvim_lsp' },
 		{ name = 'luasnip' },
-		{ name = 'buffer' },
-		{ name = 'path' },
 		{ name = 'orgmode' },
+		{ name = 'path' },
+		{ name = 'buffer' },
 	}
 })
 
@@ -231,18 +232,16 @@ cmp.setup.cmdline('/', {
 	}
 })
 
--- this isn't working right now for some reason
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
--- cmp.setup.cmdline(':', {
--- 	view = {
--- 		entries = { name = 'wildmenu', separator = ' | ' }
--- 	},
--- 	sources = cmp.config.sources({
--- 		{ name = 'path' },
--- 	}, {
--- 		{ name = 'cmdline' },
--- 	})
--- })
+cmp.setup.cmdline(':', {
+	view = {
+		entries = { name = 'wildmenu', separator = ' | ' }
+	},
+	sources = cmp.config.sources({
+		{ name = 'cmdline' },
+		{ name = 'path' },
+	})
+})
 
 -- Add autocomplete to LSP config
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
@@ -512,7 +511,7 @@ autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
 colorscheme gruvbox
 set termguicolors
-set bg=dark
+set bg=light
 
 hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE

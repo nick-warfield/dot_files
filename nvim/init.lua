@@ -46,7 +46,7 @@ require('packer').startup(function(use)
 	--use 'octaltree/cmp-look'         -- Source
 
 	-- Writing
-	use 'nvim-neorg/neorg'
+	use 'nvim-orgmode/orgmode'
 	use { 'junegunn/goyo.vim', cmd = 'Goyo' }
 	use { 'xuhdev/vim-latex-live-preview', ft = 'tex' }
 	--proselint (pip)
@@ -231,6 +231,7 @@ cmp.setup.cmdline('/', {
 	}
 })
 
+-- this isn't working right now for some reason
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 -- cmp.setup.cmdline(':', {
 -- 	view = {
@@ -343,6 +344,26 @@ require("dapui").setup({
 	windows = { indent = 1 },
 })
 
+-- Orgmode Config
+-- Load custom tree-sitter grammar for org filetype
+require('orgmode').setup_ts_grammar()
+
+-- Tree-sitter configuration
+require'nvim-treesitter.configs'.setup {
+  -- If TS highlights are not enabled at all, or disabled via `disable` prop, highlighting will fallback to default Vim syntax highlighting
+  highlight = {
+    enable = true,
+    --disable = {'org'}, -- Remove this to use TS highlighter for some of the highlights (Experimental)
+    additional_vim_regex_highlighting = {'org'}, -- Required since TS highlighter doesn't support all syntax features (conceal)
+  },
+  ensure_installed = {'org'}, -- Or run :TSUpdate org
+}
+
+require('orgmode').setup({
+  org_agenda_files = { '~/Documents/org/*' },
+  org_default_notes_file = '~/Documents/org/refile.org',
+})
+
 -- Remaining Vimscript to convert
 --	* autocmd and cmd still require vimscript
 --
@@ -379,6 +400,7 @@ highlight Folded cterm=italic guibg=None ctermbg=None ctermfg=Yellow
 " Fold Methods
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
+set foldminlines=10
 
 " Custom Commands
 command! -nargs=0 WW
@@ -486,7 +508,6 @@ set linebreak
 if has('nvim')
 	let $GIT_EDITOR = 'nvr -cc split --remote-wait'
 endif
-
 autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
 colorscheme gruvbox
@@ -496,6 +517,10 @@ set bg=dark
 hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE
+
+hi GitGutterAdd guibg=NONE  ctermbg=NONE
+hi GitGutterDelete guibg=NONE  ctermbg=NONE
+hi GitGutterChange guibg=NONE  ctermbg=NONE
 
 hi GruvboxAquaSign guibg=NONE ctermbg=NONE
 hi GruvboxBlueSign guibg=NONE ctermbg=NONE

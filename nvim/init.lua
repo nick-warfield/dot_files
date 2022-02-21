@@ -486,9 +486,27 @@ noremap  <silent> <leader>t <Cmd>FloatermToggle default<CR>
 inoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
 tnoremap <silent> <leader>t <Cmd>FloatermToggle default<CR>
 
-noremap  <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
-inoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
-tnoremap <silent> <leader>f <Cmd>Telescope find_files theme=ivy<CR>
+" Telescope keybinds
+noremap  <silent> <leader>ff <Cmd>Telescope find_files theme=ivy<CR>
+inoremap <silent> <leader>ff <Cmd>Telescope find_files theme=ivy<CR>
+tnoremap <silent> <leader>ff <Cmd>Telescope find_files theme=ivy<CR>
+
+" live_grep requires having ripgrep installed
+noremap  <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
+inoremap <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
+tnoremap <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
+
+noremap  <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+inoremap <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+tnoremap <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+
+noremap  <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
+inoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
+tnoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
+
+noremap  <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
+inoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
+tnoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
 
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==

@@ -36,3 +36,6 @@ Polybar TODO:
 
 Notifications TODO:
 * Need a better setup for notifications, right now I have none
+
+Rofi TODO:
+* Need to rice it up, not the biggest fan of the defaults

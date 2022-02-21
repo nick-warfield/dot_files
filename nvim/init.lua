@@ -190,25 +190,45 @@ cmp.setup({
 			end
 		end, { "i", "s" }),
 
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif luasnip.expand_or_jumpable() then
-				luasnip.expand_or_jump()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
+		["<Tab>"] = cmp.mapping({
+			c = function()
+				if cmp.visible() then
+					cmp.select_next_item({ behavior = cmp.SelectBehavior.Insert })
+				else
+					cmp.complete()
+				end
+			end,
+			i = function(fallback)
+				if cmp.visible() then
+					cmp.select_next_item()
+				elseif luasnip.expand_or_jumpable() then
+					luasnip.expand_or_jump()
+				else
+					fallback()
+				end
+			end,
+			s = i,
+		}),
 
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif luasnip.jumpable(-1) then
-				luasnip.jump(-1)
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
+		["<S-Tab>"] = cmp.mapping({
+			c = function()
+				if cmp.visible() then
+					cmp.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
+				else
+					cmp.complete()
+				end
+			end,
+			i = function(fallback)
+				if cmp.visible() then
+					cmp.select_prev_item()
+				elseif luasnip.jumpable(-1) then
+					luasnip.jump(-1)
+				else
+					fallback()
+				end
+			end,
+			s = i
+		}),
 	},
 	experimental = {
 		ghost_text = true,
@@ -225,7 +245,7 @@ cmp.setup({
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline('/', {
 	view = {
-		entries = { name = 'wildmenu', separator = ' | ' }
+		entries = { name = 'wildmenu' }
 	},
 	sources = {
 		{ name = 'buffer' }
@@ -235,7 +255,7 @@ cmp.setup.cmdline('/', {
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
 	view = {
-		entries = { name = 'wildmenu', separator = ' | ' }
+		entries = { name = 'wildmenu' }
 	},
 	sources = cmp.config.sources({
 		{ name = 'cmdline' },
@@ -375,9 +395,9 @@ autocmd! BufEnter *.tpp let b:fswitchdst = 'hpp,h' | let b:fswitchlocs = '../inc
 
 " Folds Config
 augroup remember_folds
-	autocmd!
-	autocmd BufWinLeave ?* mkview
-	autocmd BufWinEnter ?* silent! loadview
+autocmd!
+autocmd BufWinLeave ?* mkview
+autocmd BufWinEnter ?* silent! loadview
 augroup END
 
 function! NeatFoldText()
@@ -506,40 +526,40 @@ set linebreak
 
 if has('nvim')
 	let $GIT_EDITOR = 'nvr -cc split --remote-wait'
-endif
-autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
+	endif
+	autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
-colorscheme gruvbox
-set termguicolors
-set bg=light
+	colorscheme gruvbox
+	set termguicolors
+	set bg=light
 
-hi Normal guibg=NONE ctermbg=NONE
-hi SignColumn guibg=NONE ctermbg=NONE
-hi VertSplit guibg=NONE ctermbg=NONE
+	hi Normal guibg=NONE ctermbg=NONE
+	hi SignColumn guibg=NONE ctermbg=NONE
+	hi VertSplit guibg=NONE ctermbg=NONE
 
-hi GitGutterAdd guibg=NONE  ctermbg=NONE
-hi GitGutterDelete guibg=NONE  ctermbg=NONE
-hi GitGutterChange guibg=NONE  ctermbg=NONE
+	hi GitGutterAdd guibg=NONE  ctermbg=NONE
+	hi GitGutterDelete guibg=NONE  ctermbg=NONE
+	hi GitGutterChange guibg=NONE  ctermbg=NONE
 
-hi GruvboxAquaSign guibg=NONE ctermbg=NONE
-hi GruvboxBlueSign guibg=NONE ctermbg=NONE
-hi GruvboxGreenSign guibg=NONE ctermbg=NONE
-hi GruvboxOrangeSign guibg=NONE ctermbg=NONE
-hi GruvboxPurpleSign guibg=NONE ctermbg=NONE
-hi GruvboxRedSign guibg=NONE ctermbg=NONE
-hi GruvboxYellowSign guibg=NONE ctermbg=NONE
+	hi GruvboxAquaSign guibg=NONE ctermbg=NONE
+	hi GruvboxBlueSign guibg=NONE ctermbg=NONE
+	hi GruvboxGreenSign guibg=NONE ctermbg=NONE
+	hi GruvboxOrangeSign guibg=NONE ctermbg=NONE
+	hi GruvboxPurpleSign guibg=NONE ctermbg=NONE
+	hi GruvboxRedSign guibg=NONE ctermbg=NONE
+	hi GruvboxYellowSign guibg=NONE ctermbg=NONE
 
-autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
-autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
-autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
-autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
+	autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
+	autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
+	autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
+	autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
 
-set signcolumn=yes
-set updatetime=750
-let g:gitgutter_set_sign_backgrounds = 0
+	set signcolumn=yes
+	set updatetime=750
+	let g:gitgutter_set_sign_backgrounds = 0
 
-let g:livepreview_previewer = 'qpdfview'
-let g:vim_markdown_follow_anchor = 1
-let g:python3_host_prog='/usr/bin/python'
+	let g:livepreview_previewer = 'qpdfview'
+	let g:vim_markdown_follow_anchor = 1
+	let g:python3_host_prog='/usr/bin/python'
 
 	]]

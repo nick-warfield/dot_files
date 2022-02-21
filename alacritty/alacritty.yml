@@ -93,3 +93,4 @@ colors: *dark
 key_bindings:
     - { key: F, mods: Control|Shift, action: ReceiveChar }
     - { key: B, mods: Control|Shift, action: ReceiveChar }
+    - { key: Space, mods: Control|Alt, action: ToggleViMode }

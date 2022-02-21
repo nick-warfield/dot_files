@@ -7,7 +7,7 @@ end
 
 require('packer').startup(function(use)
 	-- General Goodies
-	use { "ellisonleao/gruvbox.nvim" }
+	use "ellisonleao/gruvbox.nvim"
 	use 'tpope/vim-surround'
 	use 'tpope/vim-repeat'
 	use 'gioele/vim-autoswap'
@@ -553,7 +553,7 @@ if has('nvim')
 
 	colorscheme gruvbox
 	set termguicolors
-	set bg=light
+	set bg=dark
 
 	hi Normal guibg=NONE ctermbg=NONE
 	hi SignColumn guibg=NONE ctermbg=NONE

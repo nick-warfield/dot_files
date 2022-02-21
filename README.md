@@ -9,9 +9,6 @@ Neovim TODO:
 * Debugger setup
 * More LSP stuff, I feel like I'm still not getting the most out of it
 
-Alacritty TODO:
-* vim mode
-
 Zsh TODO:
 * move away from oh-my-zsh (it's nice but I'd rather know everything I'm using)
 * consider other shells like fsh

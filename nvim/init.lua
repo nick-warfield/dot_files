@@ -27,7 +27,7 @@ require('packer').startup(function(use)
 	use 'Chiel92/vim-autoformat'
 	use 'mfussenegger/nvim-dap'      -- Debugger
 	use 'rcarriga/nvim-dap-ui'       -- Debugger UI
-	use 'glepnir/lspsaga.nvim'       -- LSP UI
+	use 'tami5/lspsaga.nvim'       -- LSP UI
 	--use 'lambdalisue/fern.vim'       -- Tree viewer
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-telescope/telescope.nvim'
@@ -262,6 +262,10 @@ cmp.setup.cmdline(':', {
 		{ name = 'path' },
 	})
 })
+
+-- Lspsaga default config
+local saga = require 'lspsaga'
+saga.init_lsp_saga()
 
 -- Add autocomplete to LSP config
 local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())

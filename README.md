@@ -9,10 +9,6 @@ Neovim TODO:
 * Debugger setup
 * More LSP stuff, I feel like I'm still not getting the most out of it
 
-Zsh TODO:
-* move away from oh-my-zsh (it's nice but I'd rather know everything I'm using)
-* consider other shells like fsh
-
 Bspwm TODO:
 * Dynamic Desktops - Make specific desktops on the fly for things like Firefox, Spotify, Steam, Discord, Terminal, etc
 

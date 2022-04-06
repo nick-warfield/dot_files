@@ -9,6 +9,8 @@
     tool = nvimdiff
 [difftool "nvr"]
     cmd = nvr -s -d $LOCAL $REMOTE
+[difftool "nvimdiff"]
+    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
 
 [merge]
     tool = nvimdiff

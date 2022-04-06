@@ -48,6 +48,7 @@ require('packer').startup(function(use)
 
 	-- Writing
 	use 'nvim-orgmode/orgmode'
+	use 'vimwiki/vimwiki'
 	use { 'junegunn/goyo.vim', cmd = 'Goyo' }
 	use { 'xuhdev/vim-latex-live-preview', ft = 'tex' }
 	--proselint (pip)
@@ -386,6 +387,13 @@ require('orgmode').setup({
 	org_agenda_files = { '~/Documents/org/*' },
 	org_default_notes_file = '~/Documents/org/refile.org',
 })
+
+vim.opt.compatible = false
+vim.g.vimwiki_list = { {
+	['path'] = '~/Documents/wiki/',
+	['path_html'] = '~/Documents/wiki/html/'
+    }
+}
 
 -- Remaining Vimscript to convert
 --	* autocmd and cmd still require vimscript

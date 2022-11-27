@@ -15,6 +15,7 @@ require('packer').startup(function(use)
 	use 'derekwyatt/vim-fswitch'
 	use 'airblade/vim-gitgutter'
 	use 'APZelos/blamer.nvim'
+	use 'tikhomirov/vim-glsl'
 
 	-- Window/Buffer Management
 	use 'voldikss/vim-floaterm'
@@ -32,6 +33,7 @@ require('packer').startup(function(use)
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-telescope/telescope.nvim'
 	use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+	use { 'xiyaowong/telescope-emoji.nvim', run = 'make' }
 
 	-- Autocomplete
 	use 'hrsh7th/nvim-cmp'
@@ -119,6 +121,9 @@ for _, lsp in ipairs(servers) do
 		}
 	}
 end
+
+nvim_lsp['clangd'].setup {
+}
 
 -- Treesitter config
 require'nvim-treesitter.configs'.setup {
@@ -284,17 +289,30 @@ require('telescope').setup {
 			override_generic_sorter = true,
 			override_file_sorter = true,
 			case_mode = "smart_case",
+		},
+		emoji = {
+			action = function(emoji)
+				-- argument emoji is a table.
+				-- {name="", value="", cagegory="", description=""}
+
+				vim.fn.setreg("+", emoji.value)
+				print([[Press p to paste this emoji]] .. emoji.value)
+
+				-- insert emoji when picked
+				-- vim.api.nvim_put({ emoji.value }, 'c', false, true)
+			end,
 		}
 	}
 }
 
 require('telescope').load_extension('fzf')
+require("telescope").load_extension('emoji')
 
 -- Debugger Config
 local dap = require('dap')
 dap.adapters.lldb = {
 	type = 'executable',
-	command = '/usr/bin/lldb-vscode', -- adjust as needed
+	command = '/usr/bin/lldb-vscode',
 	name = "lldb"
 }
 
@@ -337,35 +355,51 @@ require("dapui").setup({
 		remove = "d",
 		edit = "e",
 		repl = "r",
+		toggle = "t",
 	},
-	sidebar = {
-		-- You can change the order of elements in the sidebar
-		elements = {
-			-- Provide as ID strings or tables with "id" and "size" keys
-			{
-				id = "scopes",
-				size = 0.25, -- Can be float or integer > 1
+	-- Expand lines larger than the window
+	-- Requires >= 0.7
+	expand_lines = vim.fn.has("nvim-0.7"),
+	-- Layouts define sections of the screen to place windows.
+	-- The position can be "left", "right", "top" or "bottom".
+	-- The size specifies the height/width depending on position. It can be an Int
+	-- or a Float. Integer specifies height/width directly (i.e. 20 lines/columns) while
+	-- Float value specifies percentage (i.e. 0.3 - 30% of available lines/columns)
+	-- Elements are the elements shown in the layout (in order).
+	-- Layouts are opened in order so that earlier layouts take priority in window sizing.
+	layouts = {
+		{
+			elements = {
+				-- Elements can be strings or table with id and size keys.
+				{ id = "scopes", size = 0.25 },
+				"breakpoints",
+				"stacks",
+				"watches",
 			},
-			{ id = "breakpoints", size = 0.25 },
-			{ id = "stacks", size = 0.25 },
-			{ id = "watches", size = 00.25 },
+			size = 40, -- 40 columns
+			position = "left",
 		},
-		size = 40,
-		position = "left", -- Can be "left", "right", "top", "bottom"
-	},
-	tray = {
-		elements = { "repl" },
-		size = 10,
-		position = "bottom", -- Can be "left", "right", "top", "bottom"
+		{
+			elements = {
+				"repl",
+				"console",
+			},
+			size = 0.25, -- 25% of total lines
+			position = "bottom",
+		},
 	},
 	floating = {
 		max_height = nil, -- These can be integers or a float between 0 and 1.
 		max_width = nil, -- Floats will be treated as percentage of your screen.
+		border = "single", -- Border style. Can be "single", "double" or "rounded"
 		mappings = {
 			close = { "q", "<Esc>" },
 		},
 	},
 	windows = { indent = 1 },
+	render = {
+		max_type_length = nil, -- Can be integer or nil.
+	}
 })
 
 -- Orgmode Config
@@ -392,7 +426,10 @@ vim.opt.compatible = false
 vim.g.vimwiki_list = { {
 	['path'] = '~/Documents/wiki/',
 	['path_html'] = '~/Documents/wiki/html/'
-    }
+}, {
+	['path'] = '~/Documents/video-essays/',
+	['path_html'] = '~/Documents/video-essays/html/'
+}
 }
 
 -- Remaining Vimscript to convert
@@ -431,7 +468,7 @@ highlight Folded cterm=italic guibg=None ctermbg=None ctermfg=Yellow
 " Fold Methods
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
-set foldminlines=10
+set foldminlines=3
 
 " Custom Commands
 command! -nargs=0 WW
@@ -459,6 +496,7 @@ command! -nargs=0 RRC
 
 " Custom Key Bindings
 " Additional escape sequences
+tnoremap <Esc> <c-\><c-n>
 tnoremap <c-[> <c-\><c-n>
 tnoremap <c-w> <c-\><c-n><c-w>
 
@@ -520,6 +558,10 @@ noremap  <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=f
 inoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
 tnoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
 
+nnoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
+inoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
+tnoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
+
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
 nnoremap <silent> <c-k> :m .-2<CR>==
@@ -532,9 +574,9 @@ vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 nnoremap <silent> <F1> :VimwikiIndex<cr>
 nnoremap <silent> <F4> :FloatermNew --autoinsert=true --height=0.95 --width=0.95 --wintype=float --autoclose=1 --title=lazygit lazygit<cr>
 
-nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
-nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=tests make test<cr>
-nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=81 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
+nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
+nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=tests make test<cr>
+nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
 nnoremap <silent> <F8> <CMD>lua require("dapui").toggle()<CR>
 
 " Global Settings
@@ -584,6 +626,7 @@ if has('nvim')
 	autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
 	autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
 
+	set clipboard+=unnamedplus
 	set signcolumn=yes
 	set updatetime=750
 	let g:gitgutter_set_sign_backgrounds = 0

@@ -6,6 +6,7 @@ SETUVAR _fish_abbr_t:trash
 SETUVAR _fish_abbr_v:nvim
 
 SETUVAR fish_key_bindings:fish_vi_key_bindings
+SETUVAR fish_cursor_unknown:block
 
 function jl
 	jq -C | less -R

@@ -90,6 +90,9 @@ schemes:
 
 colors: *dark
 
+env:
+  TERM: xterm-256color
+
 key_bindings:
     - { key: F, mods: Control|Shift, action: ReceiveChar }
     - { key: B, mods: Control|Shift, action: ReceiveChar }

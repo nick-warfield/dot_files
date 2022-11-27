@@ -2,7 +2,7 @@
 
 xrdb ~/.Xresources
 xset r rate 270 60
-xrandr --output DP-0 --primary --output HDMI-0 --above DP-0
+xrandr --output DisplayPort-2 --primary --output HDMI-A-3 --above DisplayPort-2
 xsetroot --cursor_name left_ptr
 xsetroot -xcf /usr/share/icons/Adwaita/cursors/left_ptr 16
 

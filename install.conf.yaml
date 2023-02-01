@@ -15,10 +15,11 @@
       path: fish/*
     ~/.config/nvim/init.lua: nvim/init.lua
     ~/.config/alacritty/alacritty.yml: alacritty/alacritty.yml
-    ~/.config/bspwm/:
-      glob: true
-      path: bspwm/*
-    ~/.config/sxhkd/sxhkdrc: sxhkd/sxhkdrc
-    ~/.config/polybar/:
-      glob: true
-      path: polybar/*
+
+  #    ~/.config/bspwm/:
+  #      glob: true
+  #      path: bspwm/*
+  #    ~/.config/sxhkd/sxhkdrc: sxhkd/sxhkdrc
+  #    ~/.config/polybar/:
+  #      glob: true
+  #      path: polybar/*

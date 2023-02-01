@@ -7,7 +7,9 @@ end
 
 require('packer').startup(function(use)
 	-- General Goodies
-	use "ellisonleao/gruvbox.nvim"
+	use 'ellisonleao/gruvbox.nvim'
+	use 'sainnhe/everforest'
+	use 'xiyaowong/nvim-transparent'
 	use 'tpope/vim-surround'
 	use 'tpope/vim-repeat'
 	use 'gioele/vim-autoswap'
@@ -16,6 +18,10 @@ require('packer').startup(function(use)
 	use 'airblade/vim-gitgutter'
 	use 'APZelos/blamer.nvim'
 	use 'tikhomirov/vim-glsl'
+	use {
+		'numToStr/Comment.nvim',
+		config = function() require('Comment').setup() end
+	}
 
 	-- Window/Buffer Management
 	use 'voldikss/vim-floaterm'
@@ -28,7 +34,7 @@ require('packer').startup(function(use)
 	use 'Chiel92/vim-autoformat'
 	use 'mfussenegger/nvim-dap'      -- Debugger
 	use 'rcarriga/nvim-dap-ui'       -- Debugger UI
-	use 'tami5/lspsaga.nvim'       -- LSP UI
+	-- use 'tami5/lspsaga.nvim'       -- LSP UI
 	--use 'lambdalisue/fern.vim'       -- Tree viewer
 	use 'nvim-lua/plenary.nvim'
 	use 'nvim-telescope/telescope.nvim'
@@ -270,11 +276,11 @@ cmp.setup.cmdline(':', {
 })
 
 -- Lspsaga default config
-local saga = require 'lspsaga'
-saga.init_lsp_saga()
+-- local saga = require 'lspsaga'
+-- saga.init_lsp_saga()
 
 -- Add autocomplete to LSP config
-local capabilities = require('cmp_nvim_lsp').update_capabilities(vim.lsp.protocol.make_client_capabilities())
+local capabilities = require('cmp_nvim_lsp').default_capabilities(vim.lsp.protocol.make_client_capabilities())
 for _, lsp in ipairs(servers) do
 	nvim_lsp[lsp].setup {
 		capabilities = capabilities
@@ -432,11 +438,24 @@ vim.g.vimwiki_list = { {
 }
 }
 
+require("transparent").setup({
+  enable = true,
+  extra_groups = {
+  },
+  exclude = {},
+})
+
+-- Comment Setup
+require('Comment').setup()
+
 -- Remaining Vimscript to convert
 --	* autocmd and cmd still require vimscript
---
--- Autoformat Config
 vim.cmd [[
+
+" Auto set spell check for these filetypes
+autocmd Filetype vimwiki,tex,markdown setlocal spell | setlocal spelllang=en_us
+
+" Autoformat Config
 autocmd Filetype vim,tex let b:autoformat_autoindent=0 | let b:autoformat_remove_trailing_spaces=0
 autocmd BufNewFile,BufRead *.tpp set filetype=cpp
 autocmd! BufEnter *.hpp let b:fswitchdst = 'cpp,c,mpp'
@@ -450,14 +469,14 @@ autocmd BufWinEnter ?* silent! loadview
 augroup END
 
 function! NeatFoldText()
-let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
-let lines_count = v:foldend - v:foldstart + 1
-let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
-let foldchar = matchstr(&fillchars, 'fold:\zs.')
-let foldtextstart = strpart('[+]' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
-let foldtextend = lines_count_text . repeat(foldchar, 8)
-let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
-return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
+	let line = ' ' . substitute(getline(v:foldstart), '^\s*"\?\s*\|\s*"\?\s*{{' . '{\d*\s*', '', 'g') . ' '
+	let lines_count = v:foldend - v:foldstart + 1
+	let lines_count_text = '| ' . printf("%10s", lines_count . ' lines') . ' |'
+	let foldchar = matchstr(&fillchars, 'fold:\zs.')
+	let foldtextstart = strpart('[+]' . repeat(foldchar, v:foldlevel*2) . line, 0, (winwidth(0)*2)/3)
+	let foldtextend = lines_count_text . repeat(foldchar, 8)
+	let foldtextlength = strlen(substitute(foldtextstart . foldtextend, '.', 'x', 'g')) + &foldcolumn
+	return foldtextstart . repeat(foldchar, winwidth(0)-foldtextlength) . foldtextend
 endfunction
 
 " Fold Text
@@ -546,13 +565,13 @@ noremap  <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
 inoremap <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
 tnoremap <silent> <leader>fg <Cmd>Telescope live_grep theme=ivy<CR>
 
-noremap  <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
-inoremap <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
-tnoremap <silent> <leader>fz <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+noremap  <silent> <leader>fd <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+inoremap <silent> <leader>fd <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
+tnoremap <silent> <leader>fd <Cmd>Telescope current_buffer_fuzzy_find previewer=false<CR>
 
-noremap  <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
-inoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
-tnoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false<CR>
+noremap  <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false initial_mode=normal<CR>
+inoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false initial_mode=normal<CR>
+tnoremap <silent> <leader>fb <Cmd>Telescope buffers theme=dropdown previewer=false initial_mode=normal<CR>
 
 noremap  <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
 inoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=false<CR>
@@ -561,6 +580,12 @@ tnoremap <silent> <leader>fh <Cmd>Telescope help_tags theme=dropdown previewer=f
 nnoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
 inoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
 tnoremap <silent> <leader>fe <Cmd>Telescope emoji<CR>
+
+nnoremap <silent> <leader>s <Cmd>Telescope spell_suggest theme=cursor initial_mode=normal<CR>
+inoremap <silent> <leader>s <Cmd>Telescope spell_suggest theme=cursor initial_mode=normal<CR>
+
+nnoremap <silent> <leader>g <Cmd>Goyo<CR>
+inoremap <silent> <leader>g <Cmd>Goyo<CR>
 
 " Move lines
 nnoremap <silent> <c-j> :m .+1<CR>==
@@ -574,9 +599,9 @@ vnoremap <silent> <c-k> :m '<-2<CR>gv=gv
 nnoremap <silent> <F1> :VimwikiIndex<cr>
 nnoremap <silent> <F4> :FloatermNew --autoinsert=true --height=0.95 --width=0.95 --wintype=float --autoclose=1 --title=lazygit lazygit<cr>
 
-nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=building\ and\ running make run<cr>
-nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=tests make test<cr>
-nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=benchmarks make bench<cr>
+nnoremap <silent> <F5> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=build cargo run<cr>
+nnoremap <silent> <F6> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=tests cargo test<cr>
+nnoremap <silent> <F7> :FloatermNew --autoinsert=true --height=0.8 --width=0.6 --wintype=float --autoclose=0 --title=benchmarks cargo bench<cr>
 nnoremap <silent> <F8> <CMD>lua require("dapui").toggle()<CR>
 
 " Global Settings
@@ -601,30 +626,15 @@ if has('nvim')
 	endif
 	autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
-	colorscheme gruvbox
+	colorscheme everforest
 	set termguicolors
 	set bg=dark
-
-	hi Normal guibg=NONE ctermbg=NONE
-	hi SignColumn guibg=NONE ctermbg=NONE
-	hi VertSplit guibg=NONE ctermbg=NONE
-
-	hi GitGutterAdd guibg=NONE  ctermbg=NONE
-	hi GitGutterDelete guibg=NONE  ctermbg=NONE
-	hi GitGutterChange guibg=NONE  ctermbg=NONE
-
-	hi GruvboxAquaSign guibg=NONE ctermbg=NONE
-	hi GruvboxBlueSign guibg=NONE ctermbg=NONE
-	hi GruvboxGreenSign guibg=NONE ctermbg=NONE
-	hi GruvboxOrangeSign guibg=NONE ctermbg=NONE
-	hi GruvboxPurpleSign guibg=NONE ctermbg=NONE
-	hi GruvboxRedSign guibg=NONE ctermbg=NONE
-	hi GruvboxYellowSign guibg=NONE ctermbg=NONE
 
 	autocmd vimenter * hi Normal guibg=NONE ctermbg=NONE
 	autocmd vimenter * hi EndOfBuffer guibg=NONE ctermbg=NONE
 	autocmd vimenter * hi FloatermBorder guibg=NONE ctermbg=NONE
 	autocmd vimenter * FloatermNew --silent --name=default --width=0.7 --height=0.9
+	autocmd vimenter * FloatermNew --silent --name=output --wintype=float --autoinsert=true --autoclose=0 --width=0.6 --height=0.8 --title=output
 
 	set clipboard+=unnamedplus
 	set signcolumn=yes
@@ -635,4 +645,4 @@ if has('nvim')
 	let g:vim_markdown_follow_anchor = 1
 	let g:python3_host_prog='/usr/bin/python'
 
-	]]
+]]

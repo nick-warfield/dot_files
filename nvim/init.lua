@@ -8,6 +8,7 @@ end
 require('packer').startup(function(use)
 	-- General Goodies
 	use 'ellisonleao/gruvbox.nvim'
+	use 'folke/tokyonight.nvim'
 	use 'sainnhe/everforest'
 	use 'xiyaowong/nvim-transparent'
 	use 'tpope/vim-surround'
@@ -626,7 +627,7 @@ if has('nvim')
 	endif
 	autocmd FileType gitcommit,gitrebase,gitconfig set bufhidden=delete
 
-	colorscheme everforest
+	colorscheme tokyonight
 	set termguicolors
 	set bg=dark
 
@@ -646,3 +647,4 @@ if has('nvim')
 	let g:python3_host_prog='/usr/bin/python'
 
 ]]
+
